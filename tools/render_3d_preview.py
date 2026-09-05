@@ -23,7 +23,7 @@ KICAD_CLI = "/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli"
 PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 NAME = "pn5180_carrier"
 MODELS = {
-    "U5": "${KIPRJMOD}/carrier.3dshapes/Seeed_XIAO_ESP32C6_on_2x7_sockets.wrl",
+    "U5": "${KIPRJMOD}/carrier.3dshapes/Seeed_XIAO_ESP32C6.wrl",   # flat-soldered XIAO (carrier:Seeed_XIAO_ESP32C6_SMD)
     "U6": "${KIPRJMOD}/carrier.3dshapes/MP1584EN_Module_22x17.wrl",
     "J10": "${KIPRJMOD}/carrier.3dshapes/Molex_CLIK-Mate_502494-0270_1x02_RA.wrl",
 }

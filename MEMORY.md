@@ -3,7 +3,8 @@
 Context and decision log for whoever picks this up. Written on the evening of 2026-09-03
 (local, −07:00; the generator stamps its files 2026-09-04 because that session's clock
 ran on UTC) by the design session this log calls "rev 1.5" — the script itself only
-stamps rev 1.3, as do the sheet title block and README; the owner has hand-edited since.
+stamps rev 1.3, while the sheet title block and README are at 1.4 since 2026-09-05; the
+owner has hand-edited since.
 Updated 2026-09-04 for the KiCad 10 migration, with measured layout and check status
 (history item 11, "Layout state", "Check status"), and 2026-09-05 for the 2×5 CLIK-Mate
 switch (item 12), the 3D models (item 13) and the flat-mounted XIAO (item 14). All clock
@@ -158,8 +159,13 @@ times below are local.
     same 1–14 numbering as the socket footprint, so the netlist is unchanged; USB-C overhang
     and antenna marker on F.Fab; courtyard includes the overhang. U5's Footprint field and
     the BOM CSV changed, the Würth 61300711821 sockets left the Mouser order list, and U5
-    was swapped on the PCB by script (pcbnew, same position/rotation/nets; its tracks still
-    end at the old socket holes 1.27 mm inboard of the new pads). The socketed footprint and
+    was swapped on the PCB by script (pcbnew, same position/rotation/nets/fields; its F.Cu
+    tracks end at the old hole centres and overlap the new pads by only ~0.1 mm — extend
+    them 1.28 mm; /EN (pad 4) is OPEN because its route jogged to B.Cu into the old THT
+    pad; 3 shorts under pad 5 (BUSY); the swap left the MPN/Mouser fields visible on silk;
+    the XIAO's underside pads need an F.Cu keep-out — see CLAUDE.md open item 14). The
+    schematic's U5 Description and F1 fields still carry the old wording (KiCad was open;
+    pending). The socketed footprint and
     its model stay in the library. Fixes from the 3D verification pass applied at the same
     time: half-hole castellations, buttons clear of the corner pads, J10 model on the
     stock F.Fab outline, no trimmer on the U6 model.
@@ -182,13 +188,13 @@ Rows without a date come from the 2026-09-03 design session.
 | Taiyo Yuden 220 µF 1210 | MSASJ32MAB5227MPNDT1, 6.3 V X5R, Mouser 963-MSASJ32MAB5227MP, $1.72 | Mouser page |
 | Mouser prefixes | 595 TI, 538 Molex, 603 Yageo, 81 Murata, 710 Würth, 771 Nexperia, 713 Seeed, 576 Littelfuse, 994 Coilcraft | live listings |
 | Mouser numbers verified on a product page | 963-MSASJ32MAB5227MP, 538-90130-3310 (retired part) | — |
-| Mouser numbers pattern-derived (spot-check at checkout) | all Murata 81-…, 713-113991182 (XIAO SKU), 710-61300711821 | — |
+| Mouser numbers pattern-derived (spot-check at checkout) | all Murata 81-…, 713-113991182 (XIAO SKU); 710-61300711821 retired with the sockets | — |
 | Würth 1×7 socket (dropped 2026-09-05 — XIAO soldered flat) | 61300711821 (WR-PHD series confirmed) | search |
 | JLCPCB 2-layer limits | 0.127 trace/space, 0.3 drill, via 0.45–0.5 pad, 0.5 hole-hole, 0.2 edge, silk 0.15/1.0 | JLC capability pages |
 | KiCad on the owner's Mac | 10.0.6; `kicad-cli` at `/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli`; stock libs under `…/Contents/SharedSupport/{symbols,footprints,3dmodels}`; bundled Python with `pcbnew` under `…/Contents/Frameworks/Python.framework/Versions/Current/bin/python3` | run 2026-09-04 |
 | Stock footprints used by the PCB after the 2026-09-05 swaps, all present in the 10.0 library | nine names: Capacitor_SMD C_0603/C_1210 HandSolder, Resistor_SMD R_0603 HandSolder + R_Array_Convex_4x0603, Diode_SMD D_SMA/D_SOD-123/D_SOD-128, SOIC-16_3.9x9.9mm_P1.27mm, SOT-223-3_TabPin2; F1, J10, J1–J8, U5, U6 use `carrier:` footprints | file check 2026-09-05 |
 | Board outline | Rectangle, edge-line centres X 108.0–170.5, Y 52.0–158.5 → 62.5 × 106.5 mm, 0.05 mm stroke (bottom-right corner was at x 170.0 from 18:28 until fixed 23:25) | pcbnew 2026-09-04 23:25 |
-| Connector tab pad to board edge (1×10 footprints, pre-swap; with the 2×5 footprints the nail pads reach x 109.625 / 168.875, i.e. 1.625 mm from the edge on both sides — pcbnew 2026-09-05; the ≥ 1.35 mm 3V3 lane still fits) | J5–J8: tab pads reach x 110.10–110.15, 2.10–2.15 mm to the edge. J1–J4: tab pads reach x 168.30–168.35, 2.15–2.20 mm. End connectors' tab pads are 1.25 mm from the top/bottom edges; J10's tab pads 0.65 mm from the bottom edge | pcbnew 2026-09-04 23:25 |
+| Connector tab pad to board edge (1×10 footprints, pre-swap; with the 2×5 footprints the nail pads reach x 109.575–109.625 / 168.825–168.875, i.e. 1.575–1.675 mm from the edge (min 1.575 on J6/J8) — pcbnew 2026-09-05; the ≥ 1.35 mm 3V3 lane still fits) | J5–J8: tab pads reach x 110.10–110.15, 2.10–2.15 mm to the edge. J1–J4: tab pads reach x 168.30–168.35, 2.15–2.20 mm. End connectors' tab pads are 1.25 mm from the top/bottom edges; J10's tab pads 0.65 mm from the bottom edge | pcbnew 2026-09-04 23:25 |
 | Power netclass patterns | `+5V`, `+3V3`, `+24V`, `5V_*`, `24V_*`, `*D2-K*` (Default 0.25/0.25 via 0.6/0.3; Power 0.8/0.25 via 0.8/0.4) | .kicad_pro 2026-09-04 |
 | Rasteriser | `cairosvg` absent everywhere; `qlmanage -t -s 2400 -o existing_dir file` → `file.png` works for PDF, footprint SVGs and the portrait board SVG (square render — crops the A3 schematic SVG, use the PDF); Pillow 12 in Homebrew python3 3.14 only | run 2026-09-04 |
 
@@ -231,9 +237,9 @@ D9=20 D10=18 (write code with the D names).
   (0.3 edge + 0.8 track + 0.25 Power clearance; the 1.2 mm quoted earlier was
   under-derived), so it now fits everywhere and no further move is needed. Tab-column
   gaps between connectors are ~2 mm — enough for the feeder vias.
-- The XIAO body (F.Fab centreline) ends 0.45 mm inside the top edge and its courtyard sits
-  on the edge line; only the USB-C shell outline (silk) crosses the edge, by ~1.05 mm —
-  less than the 1–2 mm overhang the layout rule asks for.
+- The XIAO module edge is 0.50 mm inside the top edge and the USB-C shell 1.05 mm proud of
+  it (the SMD footprint's courtyard, which includes the overhang, crosses the edge by
+  1.3 mm) — less than the 1–2 mm overhang the layout rule asks for.
 - Power plan delivered as `power_routing_full.png` (not in the repo): 24 V in the bottom
   strip; 5 V trunk from OUT+ down the module centreline, right of C8/C9, via; 3V3 trunk
   from U4's tab down at ~1.3 mm off the module's right pads, via; both feeders on the
@@ -264,15 +270,16 @@ D9=20 D10=18 (write code with the D names).
   (Update PCB from Schematic drops fills), so DRC on the file as saved over-reports:
   336 violations, 149 unconnected, 0 parity. With zones refilled on a scratch copy (do not
   `--refill-zones` the repo file): **304 violations, 78 unconnected, 0 parity** — all of
-  it the pending re-route: 44 shorts (old NSS stubs/vias on the new GND pad 9 of J1–J8, a
-  GND via in J3's nail pad), 97 clearance, 27 hole clearance (SCK vias under pad 1 of
+  it the pending re-route: 44 shorts (41 at J1–J8: old NSS stubs/vias on the new GND pad 9,
+  a GND via in J3's nail pad; 3 at U5 pad 5 under the /EN and /RST tracks), 97 clearance, 27 hole clearance (SCK vias under pad 1 of
   J2/J3/J4), 75 mask bridges, 27 dangling tracks, 1 dangling via, 4 starved thermals
   (RN1.5, U1.5, J7.9, J7.10), 5 courtyard overlaps (U5's castellation pads now reach
   1.25 mm past the module edge, into R1/R5 on one side and R6/R7/D1 on the other — move
   those five ~1.5 mm outward), silk 8 overlap + 7 over copper + 2 edge, 7 text-size
   warnings. Unconnected by net: GND 10, +3V3 10, ~{RST} 9, SCK 9, +5V 8, MOSI 8, MISO 7,
-  ~{EN} 1, one each on NSS0–7 and BUSY0–7 (U5's tracks end at the old socket holes,
-  1.27 mm short of the new pads). ERC 82 and the netlist (38 nets, 189 nodes, 0 problems)
+  ~{EN} 1 (U5 pad 4 is open: its route jogged to B.Cu into the old through-hole), one
+  each on NSS0–7 and BUSY0–7 (U5's F.Cu tracks end at the old hole centres, overlapping
+  the new pads by only ~0.1 mm). ERC 82 and the netlist (38 nets, 189 nodes, 0 problems)
   are unchanged. The 2026-09-04 baseline below applies only to the pre-swap board.
 
 ## Check status (kicad-cli 10.0.6, 2026-09-04, files as saved 22:06 — pre-swap baseline)
@@ -359,7 +366,7 @@ D9=20 D10=18 (write code with the D names).
 - ~~Move the board outline out 0.5 mm per side?~~ Done by the owner on 2026-09-04
   18:28–18:29, by 1.5 mm per side; tab-pad-to-edge is now 2.10–2.15 mm left, 2.15–2.20 mm
   right (pcbnew, after the 23:25 corner fix) and the 3V3 lane fits. (1×10 figures; the
-  2×5 nail pads sit 1.625 mm from the edge on both sides — still fits.)
+  2×5 nail pads sit 1.575–1.675 mm from the edge — still fits.)
 - ~~Straighten the right edge?~~ Owner chose x = 170.5; done 23:25. Refill zones and
   re-export gerbers in the GUI.
 - Delete PWR_FLAG #FLG01 on U6 OUT+ (the one ERC error)? Update the embedded `power:`
@@ -372,7 +379,7 @@ D9=20 D10=18 (write code with the D names).
   (schematic Value, BOM CSV, README, schematic DESIGN NOTES)? The files say adjustable;
   the owner's photo of the module (2026-09-05, used for the 3D model) shows no trimmer,
   i.e. the fixed-output type — confirm, then drop the pot-setting text everywhere.
-- Is routing signals on B.Cu (112 segments today) accepted, or does the "two feeders
+- Is routing signals on B.Cu (104 segments today) accepted, or does the "two feeders
   only" bottom-layer rule still stand?
 - U5 sits 0.45 mm inside the top edge instead of overhanging 1–2 mm: move it up, or
   relax the rule?

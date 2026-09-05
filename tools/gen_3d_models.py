@@ -188,7 +188,7 @@ def mp1584_module():
     m.box(-6.4, -0.9, -2.2, 3.3, 4.1, 4.13, IND_TOP)
     m.box(1.4, 6.3, -1.0, 2.9, 1.2, 2.75, BLACK)                          # MP1584EN SOIC-8, pins along X
     for k in range(4):
-        x = 2.05 + 1.27 * k
+        x = 1.945 + 1.27 * k                                              # pin row centred on the body
         m.box(x - 0.22, x + 0.22, 2.9, 3.85, 1.2, 1.45, TIN)
         m.box(x - 0.22, x + 0.22, -1.95, -1.0, 1.2, 1.45, TIN)
     for cx, cy in ((7.6, 6.3), (9.8, 6.3), (-8.2, -6.4), (-5.6, -6.4), (8.6, -6.3)):   # 0805 ceramics
@@ -198,7 +198,7 @@ def mp1584_module():
     m.box(-1.6, 2.1, -7.0, -5.4, 1.2, 2.3, BLACK)                         # SOD-123 diode
     m.box(-2.2, -1.6, -6.6, -5.8, 1.2, 1.5, TIN)
     m.box(2.1, 2.7, -6.6, -5.8, 1.2, 1.5, TIN)
-    m.box(-9.8, -8.6, 1.4, 3.4, 1.2, 1.9, CAP)                            # 0603 near the IN corner
+    m.box(-9.9, -8.3, -0.4, 0.4, 1.2, 1.9, CAP)                           # 0603 (1.6 x 0.8) on the IN edge, clear of the rings
     return m
 
 
