@@ -3401,7 +3401,7 @@
 		)
 		(uuid "4dd3b8bf-6903-47c3-b5c8-371fdda41352")
 	)
-	(text "JP1 (bridged) -> D1 Schottky -> XIAO 5V pin: the XIAO 5V pin is raw USB VBUS, D1 keeps the carrier from back-feeding USB."
+	(text "Carrier 5V -> D1 Schottky -> XIAO 5V pin: the XIAO 5V pin is raw USB VBUS, D1 keeps the carrier from back-feeding USB."
 		(exclude_from_sim no)
 		(at 243.84 207.01 0)
 		(effects
@@ -3699,7 +3699,7 @@
 		)
 		(uuid "c830ee7f-76f9-4a41-81d7-7087ed669fb4")
 	)
-	(text "JP2 (bridged): feeds carrier 3V3 to bay pin 2. Open it if your modules regulate 3V3 onboard."
+	(text "Carrier 3V3 feeds bay pin 2 directly. Leave pin 2 out of the cable if your modules regulate 3V3 onboard."
 		(exclude_from_sim no)
 		(at 243.84 210.82 0)
 		(effects
