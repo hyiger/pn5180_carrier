@@ -1,0 +1,35 @@
+# KiCad per-user / transient state (never design content)
+*.kicad_prl
+~*.lck
+*.lck
+_autosave-*
+*-backups/
+*.bak
+*.kicad_sch-bak
+*.kicad_pcb-bak
+*-cache.lib
+*-rescue.lib
+*-rescue.dcm
+fp-info-cache
+.history/
+
+# Generated check outputs (kicad-cli exports made during verification)
+net.txt
+erc.json
+drc.json
+erc.rpt
+drc.rpt
+schematic.pdf
+schematic.svg
+board.svg
+out/
+
+# Python
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
+
+# Stray shell-redirect fragment in the repo root (delete when convenient)
+rites next to this script#

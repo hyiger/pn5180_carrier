@@ -1,0 +1,212 @@
+# PN5180 8-Bay NFC Reader Carrier — Claude Code guide
+
+@MEMORY.md
+
+## What this project is
+
+A KiCad PCB that lets 4 or 8 PN5180 NFC breakout modules (in filament spool bays,
+~30 cm away over cables) share one SPI bus with a Seeed XIAO ESP32C6 socketed at the top
+centre of the board. A 74HC138 decodes 3 address lines into 8 chip selects; a 74HC151
+muxes the 8 BUSY lines back to one GPIO. The board runs from the Prusa Core One's 24 V
+supply through an MP1584EN buck module. It is part of the owner's Filament DB / spool
+rack ecosystem (owner: hyiger). Read `MEMORY.md` for the full decision log and verified
+part data before touching anything.
+
+## Source of truth
+
+- **The KiCad files in this repo are authoritative** — schematic, PCB, project-local
+  libraries, README, BOM CSVs. The owner is actively laying out the PCB in the KiCad GUI.
+- `gen_kicad.py` is the script that originally generated the schematic, symbol library,
+  footprints and BOM (MEMORY.md calls the last generator session "rev 1.5"; the script
+  itself only stamps rev 1.3, as do the sheet title block and README). The owner has since
+  hand-edited the schematic
+  (JP1 and JP2 removed; other edits are possible). **The generator is now behind the
+  repo. Do not run it over the repo files.** If a change is easier to make in the
+  generator, first port every hand edit into it and diff the output against the repo
+  schematic before replacing anything — and ask the owner first. Note the generator
+  also still writes the KiCad 7 file format (20230121) while the repo files are KiCad 10,
+  so its output cannot be text-diffed against the repo schematic; compare netlists
+  (`check_netlist.py` on both exports) instead. **The generator writes next to itself**
+  (`OUTDIR` is its own directory), so copy it to a scratch directory before running it.
+  Baseline generator-vs-repo netlist diff (2026-09-04): +5V has JP1.1 instead of D1.2,
+  +3V3 has JP2.1 instead of J1–J8 pin 2, plus extra nets 3V3_BAY and 5V_ESP — 4 problems.
+- Never regenerate or overwrite `pn5180_carrier.kicad_pcb`. Layout work happens in the
+  GUI; you assist with analysis, checks, footprints, docs and BOM.
+
+## Expected repo contents
+
+| File | Role |
+|---|---|
+| `pn5180_carrier.kicad_pro` / `.kicad_sch` / `.kicad_pcb` | The design, saved by KiCad 10.0.6 (`kicad_sch` format 20260306, `kicad_pcb` 20260206). Will not open in KiCad 9 or older |
+| `pn5180_carrier.kicad_prl` | KiCad's per-user local settings (layer visibility etc.); not design content, never hand-edit |
+| `.history/` | KiCad 10 local-history snapshots (a git repo KiCad manages itself, ~590 commits; File > Local History in the GUI). `git log`/`show`/`rev-list` there are safe; `git status`/`diff`/`add`/`gc` rewrite its index — don't |
+| `gerbers/`, `gerbers.zip` | Fab export from 2026-09-04 21:46 (zip 21:48). Stale: made before routing finished, before mounting holes, and with the old skewed outline (fixed 23:25). Regenerate from the PCB, never edit |
+| `~pn5180_carrier.kicad_pro.lck`, `rites next to this script#` | Not design content. The first is KiCad's lock file (expected while the GUI has the project open, stale otherwise). The second is a 57-byte shell-redirect accident holding one line of gen_kicad.py — for the owner to delete |
+| `carrier.kicad_sym`, `sym-lib-table` | Project-local symbols |
+| `carrier.pretty/`, `fp-lib-table` | Project-local footprints: XIAO 2×7 socket, MP1584EN module pads |
+| `README.md` | Pinouts, GPIO map, jumpers, firmware sketch, layout notes, BOM |
+| `pn5180_carrier_bom.csv`, `pn5180_carrier_mouser_order.csv` | Generated BOM and Mouser import list |
+| `gen_kicad.py` | Historical generator (see above) |
+| `pn5180_carrier_schematic.pdf/.png` | Stale renders of the generator's output (still show JP1/JP2); re-export with `kicad-cli sch export pdf` |
+| `check_netlist.py` | Netlist assertion script. Parses the KiCad 10 pretty-printed netlist and the compact 7/8 layout (fixed 2026-09-04); passes clean on the repo schematic (38 nets, 189 nodes) |
+
+If any of these are missing, say so rather than recreating them from memory.
+
+## Tooling
+
+- **KiCad 10.0.6** is what the owner runs (macOS app bundle). The design files are in the
+  10.0 format (`kicad_sch` version 20260306, `kicad_pcb` version 20260206) and will not
+  open in KiCad 9 or older. Never run `kicad-cli sch upgrade` / `pcb upgrade` on the repo
+  files, and never save the design in a newer format than the owner's KiCad writes.
+- `kicad-cli` is **not on PATH**. Use the bundle path (written as `kicad-cli` below):
+  `/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli`
+- Commands verified on this repo on 2026-09-04:
+  - `kicad-cli sch export netlist --format kicadsexpr -o net.txt pn5180_carrier.kicad_sch`
+  - `kicad-cli sch erc --format json --severity-all -o erc.json pn5180_carrier.kicad_sch`
+  - `kicad-cli pcb drc --format json --severity-all --schematic-parity -o drc.json pn5180_carrier.kicad_pcb`
+    (add `--exit-code-violations` for a non-zero exit on findings; `--format report` for text)
+  - `kicad-cli sch export pdf -o schematic.pdf pn5180_carrier.kicad_sch` (likewise `export svg -o out/`)
+  - `kicad-cli pcb export svg --mode-single --fit-page-to-board -l F.Cu,B.Cu,Edge.Cuts -o board.svg pn5180_carrier.kicad_pcb`
+    (`-o` is one file in this mode. Without `--mode-single` 10.0.6 prints a deprecation
+    warning, and a directory path fails with "Failed to create file", exit 2.
+    `--mode-multi -o out/` writes one SVG per layer into a directory instead.)
+  - `kicad-cli fp export svg --footprint <name> -o out/ carrier.pretty` (the directory is
+    created only when the path ends in `/`; a missing directory without the slash prints
+    "Failed to create file …" then "Error creating svg file" **but still exits 0** — check
+    that the .svg exists rather than trusting the exit code)
+  - Present in 10 but not yet used here: `sch export bom --fields ...`,
+    `pcb export gerbers|drill|pos|step|stats`, `pcb render`.
+- Stock libraries live inside the bundle:
+  `/Applications/KiCad/KiCad.app/Contents/SharedSupport/{symbols,footprints,3dmodels}`.
+  All twelve stock footprints the PCB references were confirmed present in the 10.0
+  footprint library on 2026-09-04 (list in MEMORY.md). Verify again before introducing
+  a new one.
+- Rasterising exports so you can look at them: `cairosvg` is **not** installed in any
+  Python on this Mac. Use Quick Look instead: `qlmanage -t -s 2400 -o out/ file` writes
+  `out/file.png` (`out/` must already exist — a missing directory reports "produced one
+  thumbnail" and writes nothing). Quick Look renders into a square and crops landscape
+  SVGs, so rasterise the **PDF** export of the schematic (`schematic.pdf` →
+  `schematic.pdf.png`, 2400 × 1697, whole A3 sheet); SVG is fine for footprints and the
+  portrait board. Pillow is available in the Homebrew `python3` (3.14) for cropping.
+- Run ERC/DRC on the files **in the project directory**. DRC on a copy elsewhere loses
+  the project rules and the `carrier` library and reports a different set of findings;
+  it also drops a `.kicad_prl` beside the copy and, with `--schematic-parity`, warns that
+  it cannot fetch the schematic netlist — both signs you are in the wrong directory.
+- Board measurements: KiCad's bundled Python has the `pcbnew` module —
+  `/Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3`
+  with `pcbnew.LoadBoard(path)`. It prints a harmless wxApp "traits" assert on load, and
+  in 10 `Board.Zones()` returns a tuple. Prefer it over regexes on the `.kicad_pcb`: the
+  10.0 s-expression format puts every attribute on its own line, so one-line patterns
+  written for KiCad 7 files silently match nothing.
+
+## Verification workflow (run after any schematic change)
+
+1. Export the netlist with `kicad-cli` and run `python3 check_netlist.py net.txt`. The
+   expected nets encode the intended connectivity; a mismatch is either a bug or a
+   deliberate change — reconcile it with the owner, then update the expectations.
+2. Export the schematic to PDF, rasterise with `qlmanage`, and actually look at it for
+   overlaps (the SVG route crops the right ~30% of the sheet: J5–J8 and the title block).
+3. Run ERC and DRC with `kicad-cli` (JSON, `--severity-all`) and report results verbatim.
+   Compare against the baseline in MEMORY.md ("Check status") by (severity, type, net or
+   reference) — the specific track segment DRC names for an unconnected net varies
+   between runs on the same file. Explain anything new, but list the known findings too.
+4. Keep README pinout tables, BOM CSVs and symbol fields (Manufacturer / MPN / Mouser)
+   consistent with each other. A part change touches all of them.
+
+## Electrical design, in one screen
+
+- **Bays J1–J8**: Molex CLIK-Mate 2.00 mm right-angle SMT, 502494-1070 (1×10). Pinout
+  1=5V 2=3V3 3=/RST 4=NSS 5=MOSI 6=MISO 7=SCK 8=BUSY 9=GND 10=GND (second return; twist
+  with SCK in the harness). Pins 1–9 match the common red PN5180 module header order.
+- **U1 74HC138**: A0–A2 + /EN (G2A) → NSS0–7. G2B grounded, G1 high.
+- **U2 74HC151**: BUSY0–7 → BUSY; selects share A0–A2. RN1/RN2 = 4×100k pull-downs.
+- **U5 XIAO ESP32C6** on two 1×7 sockets (15.24 mm rows): D8 SCK, D9 MISO, D10 MOSI
+  (hardware SPI), D3 /EN, D0–D2 A0–A2, D4 BUSY, D5 /RST, D6/D7 spare. R6/R7 = 33 Ω
+  series on SCK/MOSI at the XIAO. R1/R5 10k pull-ups (/EN, /RST); R2–R4 10k pull-downs.
+- **Power**: J10 (CLIK-Mate 1×2) 24 V in → F1 1 A → D2 SMAJ28A TVS → D3 PMEG6030EP
+  reverse Schottky → C8/C9 10 µF 50 V → U6 MP1584EN module (fixed-5 V per this log,
+  adjustable "set to 5.0 V" per every design file — unresolved, open item 9; 4 THT pads,
+  IN side / OUT side) → +5V. C6 220 µF 1210 (+C7 DNP) bulk. U4 TLV1117LV33 → +3V3 for
+  the logic and the bays' pin 2. D1 PMEG2010AEH between +5V and the XIAO's 5V pin
+  (its 5V pin is raw USB VBUS). IRQ is not used anywhere.
+- All parts SMD except the two XIAO sockets (Würth 61300711821) and the MP1584EN
+  module's four 3 mm THT pads.
+
+## Layout rules the owner has agreed to
+
+- 2-layer, JLCPCB. Constraints: clearance 0.2, track 0.15, via 0.5/0.3 min, hole-to-hole
+  0.5, copper-to-edge 0.3, silk 1.0 mm / 0.15 mm. Net classes: Default 0.25/0.25 via
+  0.6/0.3; Power (patterns `+5V`, `+3V3`, `+24V`, `5V_*`, `24V_*`, `*D2-K*` — the last exists
+  only to catch the unlabeled fuse node `Net-(D2-K)`) track 0.8, clearance 0.25, via 0.8/0.4.
+- Bottom layer = one unbroken GND plane. Top = components, all signals, power as wide
+  traces, plus a stitched GND pour (thermal reliefs on THT pads; remove islands).
+- Power distribution plan: both rails run down the centre corridor to the bottom edge,
+  fork, and climb each connector column in the crossing-free lanes outboard of the pads
+  (5 V in the pad/tab channel, 3V3 between tabs and board edge). The two bottom-edge
+  feeders are the only bottom-layer traces. 3V3 to U1/U2 runs under the SOIC bodies
+  between the pad rows. The 3V3 outer lane needs ≥ 1.35 mm between the connector tab
+  pads and the board edge (0.3 edge + 0.8 track + 0.25 Power clearance; the 1.2 mm
+  quoted earlier was under-derived). The owner moved the outline out 1.5 mm per side on
+  2026-09-04 18:28–18:29 (and the bottom-right corner was squared up at 23:25); measured
+  with pcbnew afterwards: 2.10–2.15 mm on J5–J8, 2.15–2.20 mm on J1–J4. The lane fits and
+  no further outline change is needed. This bullet is
+  the plan, not the state: the board saved on 2026-09-04 has 112 bottom-layer segments
+  on 26 nets, including every signal group.
+- No copper on either layer under the XIAO's antenna end; the USB end overhangs the
+  board edge by 1–2 mm (as placed, the XIAO body ends 0.45 mm inside the edge, its courtyard
+  sits on the edge line, and only the USB-C shell outline crosses it, by ~1.05 mm).
+- Four M3 mounting holes are still to be added.
+
+## Conventions
+
+- Reference designators are fixed: U1, U2, U4–U6; J1–J8, J10; R1–R7; RN1–RN2; C1, C2,
+  C4–C9; D1–D3; F1. The gaps at U3/C3 (IRQ removal) and J9 (in no repo file; presumably
+  the retired 5 V input terminal) are deliberate —
+  never reuse or renumber; the PCB layout depends on them.
+- Custom footprints go in `carrier.pretty` with a `descr` stating the source of the
+  geometry (Seeed OPL library for the XIAO, the module's dimension drawing for the
+  MP1584EN).
+- Mouser numbers follow prefix + MPN (595 TI, 538 Molex, 603 Yageo, 81 Murata, 710
+  Würth, 771 Nexperia, 713 Seeed, 576 Littelfuse); a few were only pattern-derived —
+  MEMORY.md lists which were verified on a product page.
+- Prefer small, reviewable changes. Explain electrical consequences, not just edits.
+- The owner is an experienced engineer; be direct, give numbers, skip hand-holding.
+
+## Open items (see MEMORY.md for detail)
+
+1. ~~Straighten the board outline.~~ Done 2026-09-04 23:25 (bottom-right corner set to
+   x = 170.5 by editing the two Edge.Cuts coordinates; outline is now 108–170.5 ×
+   52–158.5). The stored zone fills still stop at the old slanted edge: **refill zones in
+   the GUI** before the next DRC/export. `gerbers/` predates the fix.
+2. Finish PCB routing per the power plan. DRC on 2026-09-04 still lists one open each
+   on +3V3, /RST, MOSI, MISO and SCK. (No further outline move is needed.)
+3. Add mounting holes; connect the five orphaned top-pour GND pads (R2.2, R3.2, R4.2,
+   U1.5, J1.9 each sit on a pour island with no via — U1.5 is the 74HC138's /E2, so a
+   floating one disables every chip select); stitch the top pour (its main island has no
+   GND via, only the U5/U6 THT pads, and J1.10's island hangs off a single thermal spoke
+   of U5.13); fix the 3 starved thermals (RN1.5, U1.5, J1.9); then regenerate `gerbers/`.
+4. R1/R5 placement (move beside U1 pins 4–5 or accept one bottom jog).
+5. Decide whether `gen_kicad.py` is retired or brought back in sync.
+6. Firmware: the README sketch (Arduino-ESP32 3.x, board XIAO_ESP32C6, ATrappmann
+   PN5180 library) has no BUSY timeouts yet.
+7. ERC: PWR_FLAG #FLG01 sits on U6 OUT+, which is already a power-output pin — one
+   `pin_to_pin` error; delete the flag. The 81 `lib_symbol_mismatch` warnings on the
+   embedded `power:` symbols are cosmetic (KiCad 10's power library differs from the
+   KiCad 7 copies gen_kicad.py embedded); "Update Symbols from Library" clears them.
+8. The F1–D2–D3 node has no label. KiCad auto-names it `Net-(D2-K)`, the Power netclass
+   reaches it only through the `*D2-K*` pattern, and `check_netlist.py` expects that name
+   — editing D2 renames the net, silently drops it out of the Power class, and fails the
+   checker. Add a `24V_F` global label (the `24V_*` pattern then applies) and delete the
+   `*D2-K*` pattern.
+9. Docs and design files disagree on U6: this file and MEMORY.md say fixed-5 V module
+   without pot, but the schematic Value ("MP1584EN module (set 5.0V)"), the BOM CSV,
+   README §power and the schematic's DESIGN NOTES all say adjustable, "set the pot to
+   5.00 V". Settle with the owner; it changes the U6 BOM line and the assembly notes.
+10. README and the BOM CSV still describe the pre-PCB, pre-JP-removal design: README
+    line 15 "KiCad 7 file format", line 30 "There is no `.kicad_pcb` yet", the Jumpers
+    section and JP1/JP2 BOM rows, `pn5180_carrier_bom.csv` row "JP1, JP2", and the two `pn5180_carrier_schematic.*`
+    renders. The schematic's DESIGN NOTES and title-block comment still mention JP1/JP2
+    and a "BUSY/IRQ mux".
+11. The XIAO as placed does not overhang: its body ends 0.45 mm inside the top edge
+    (courtyard on the edge line). Move U5 up ~1.5–2.5 mm for the agreed 1–2 mm USB
+    overhang, or relax the rule; either way the two silk_edge_clearance warnings go.

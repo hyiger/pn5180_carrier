@@ -1,0 +1,22 @@
+References,Qty,Value,Type,Manufacturer,MPN,Mouser Part Number,Footprint,Populate,Description
+"C1, C2",2,100nF,C,Murata,GRM188R71H104KA93D,81-GRM188R71H104KA93D,Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,,100nF 50V X7R 0603
+C4,1,10uF,C,Murata,GRM188R61A106KE69D,81-GRM188R61A106KE69D,Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,,10uF 10V X5R 0603
+C5,1,22uF,C,Murata,GRM188R60J226MEA0D,81-GRM188R60J226MEA0D,Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,,22uF 6.3V X5R 0603
+C6,1,220uF,C,Taiyo Yuden,MSASJ32MAB5227MPNDT1,963-MSASJ32MAB5227MP,Capacitor_SMD:C_1210_3225Metric_Pad1.33x2.70mm_HandSolder,,220uF 6.3V X5R 1210
+C7,1,220uF,C,Taiyo Yuden,MSASJ32MAB5227MPNDT1,963-MSASJ32MAB5227MP,Capacitor_SMD:C_1210_3225Metric_Pad1.33x2.70mm_HandSolder,DNP,220uF 6.3V X5R 1210
+"C8, C9",2,10uF/50V,C,Murata,GRM32ER71H106KA12L,81-GRM32ER71H106KA12L,Capacitor_SMD:C_1210_3225Metric_Pad1.33x2.70mm_HandSolder,,10uF 50V X7R 1210
+D1,1,PMEG2010AEH,D,Nexperia,PMEG2010AEH,771-PMEG2010AEH,Diode_SMD:D_SOD-123,,Schottky 20V 1A SOD-123
+D2,1,SMAJ28A,D,Littelfuse,SMAJ28A,576-SMAJ28A,Diode_SMD:D_SMA,,"TVS 28V standoff, 400W, SMA"
+D3,1,PMEG6030EP,D,Nexperia,PMEG6030EP,771-PMEG6030EP,Diode_SMD:D_SOD-128,,Schottky 60V 3A SOD-128 (reverse polarity)
+F1,1,1A slow,F,Littelfuse,0453001.MR,576-0453001.MR,Fuse:Fuse_Littelfuse-NANO2-451_453,,"1A slow-blow SMD fuse, NANO2"
+"J1, J2, J3, J4, J5, J6, J7, J8",8,"CLIK-Mate 2.00mm RA SMT receptacle 1x10, positive lock",J,Molex,502494-1070,538-502494-1070,Connector_Molex:Molex_CLIK-Mate_502494-1070_1x10-1MP_P2.00mm_Horizontal,,"CLIK-Mate 2.00mm RA SMT receptacle 1x10, positive lock"
+J10,1,24V IN (CLIK-Mate 1x2),J,Molex,502494-0270,538-502494-0270,Connector_Molex:Molex_CLIK-Mate_502494-0270_1x02-1MP_P2.00mm_Horizontal,,"CLIK-Mate 2.00mm RA SMT receptacle 1x2, positive lock"
+"JP1, JP2",2,"PCB solder jumper, no part",JP,,,,Jumper:SolderJumper-2_P1.3mm_Bridged_RoundedPad1.0x1.5mm,,"PCB solder jumper, no part"
+"R1, R2, R3, R4, R5",5,10k,R,Yageo,RC0603FR-0710KL,603-RC0603FR-0710KL,Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder,,10k 1% 0603
+"R6, R7",2,33R,R,Yageo,RC0603FR-0733RL,603-RC0603FR-0733RL,Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder,,33R 1% 0603
+"RN1, RN2",2,4x100k,RN,Yageo,YC164-FR-07100KL,603-YC164-FR-07100KL,Resistor_SMD:R_Array_Convex_4x0603,,"4x100k 1% isolated array, 0603x4"
+U1,1,74HC138,U,Texas Instruments,SN74HC138DR,595-SN74HC138DR,Package_SO:SOIC-16_3.9x9.9mm_P1.27mm,,"3-to-8 decoder, SOIC-16"
+U2,1,74HC151,U,Texas Instruments,SN74HC151DR,595-SN74HC151DR,Package_SO:SOIC-16_3.9x9.9mm_P1.27mm,,"8:1 mux, SOIC-16"
+U4,1,TLV1117LV33DCYR,U,Texas Instruments,TLV1117LV33DCYR,595-TLV1117LV33DCYR,Package_TO_SOT_SMD:SOT-223-3_TabPin2,,"3.3V 1A LDO, ceramic-stable, SOT-223"
+U5,1,XIAO ESP32C6,U,Seeed Studio,XIAO ESP32C6 (SKU 113991182),713-113991182,carrier:Seeed_XIAO_2x7_Socket,,"XIAO ESP32C6 module, 2x7 pins on 15.24mm (user-supplied; verify Mouser #)"
+U6,1,MP1584EN module (set 5.0V),U,Generic (D-SUN style),MP1584EN mini buck module,,carrier:MP1584EN_Module_22x17,,"22x17mm adjustable module, user-supplied (Amazon); set to 5.0V"
