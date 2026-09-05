@@ -263,9 +263,11 @@ D9=20 D10=18 (write code with the D names).
   only" bottom-layer rule still stand?
 - U5 sits 0.45 mm inside the top edge instead of overhanging 1–2 mm: move it up, or
   relax the rule?
-- README (line 15 "KiCad 7", line 30 "no .kicad_pcb yet", Jumpers section, JP1/JP2 BOM
-  rows), `pn5180_carrier_bom.csv` (row "JP1, JP2") and the schematic's DESIGN NOTES /
-  title comment ("BUSY/IRQ mux", JP1/JP2) all lag the design — update them?
+- ~~README, BOM CSV and schematic notes lag the design (JP1/JP2, KiCad 7)?~~ Updated
+  2026-09-04: README rewritten for KiCad 10 and the PCB, JP1/JP2 removed everywhere,
+  renders re-exported. Only title-block comment 1 ("BUSY/IRQ mux") is still stale — fix in
+  the GUI? Note: the two DESIGN NOTES texts were edited on disk while KiCad was open, so
+  the schematic editor must be reverted (File > Revert) before its next save.
 - Delete the stray repo file `rites next to this script#`?
 - Where do the M3 holes go? (Suggested: inboard of each connector column at the
   J5/J6 and J7/J8 gap levels, clear of tab pads.)

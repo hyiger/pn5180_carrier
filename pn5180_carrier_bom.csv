@@ -11,7 +11,6 @@ D3,1,PMEG6030EP,D,Nexperia,PMEG6030EP,771-PMEG6030EP,Diode_SMD:D_SOD-128,,Schott
 F1,1,1A slow,F,Littelfuse,0453001.MR,576-0453001.MR,Fuse:Fuse_Littelfuse-NANO2-451_453,,"1A slow-blow SMD fuse, NANO2"
 "J1, J2, J3, J4, J5, J6, J7, J8",8,"CLIK-Mate 2.00mm RA SMT receptacle 1x10, positive lock",J,Molex,502494-1070,538-502494-1070,Connector_Molex:Molex_CLIK-Mate_502494-1070_1x10-1MP_P2.00mm_Horizontal,,"CLIK-Mate 2.00mm RA SMT receptacle 1x10, positive lock"
 J10,1,24V IN (CLIK-Mate 1x2),J,Molex,502494-0270,538-502494-0270,Connector_Molex:Molex_CLIK-Mate_502494-0270_1x02-1MP_P2.00mm_Horizontal,,"CLIK-Mate 2.00mm RA SMT receptacle 1x2, positive lock"
-"JP1, JP2",2,"PCB solder jumper, no part",JP,,,,Jumper:SolderJumper-2_P1.3mm_Bridged_RoundedPad1.0x1.5mm,,"PCB solder jumper, no part"
 "R1, R2, R3, R4, R5",5,10k,R,Yageo,RC0603FR-0710KL,603-RC0603FR-0710KL,Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder,,10k 1% 0603
 "R6, R7",2,33R,R,Yageo,RC0603FR-0733RL,603-RC0603FR-0733RL,Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder,,33R 1% 0603
 "RN1, RN2",2,4x100k,RN,Yageo,YC164-FR-07100KL,603-YC164-FR-07100KL,Resistor_SMD:R_Array_Convex_4x0603,,"4x100k 1% isolated array, 0603x4"

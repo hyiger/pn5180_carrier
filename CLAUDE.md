@@ -48,7 +48,7 @@ part data before touching anything.
 | `README.md` | Pinouts, GPIO map, jumpers, firmware sketch, layout notes, BOM |
 | `pn5180_carrier_bom.csv`, `pn5180_carrier_mouser_order.csv` | Generated BOM and Mouser import list |
 | `gen_kicad.py` | Historical generator (see above) |
-| `pn5180_carrier_schematic.pdf/.png` | Stale renders of the generator's output (still show JP1/JP2); re-export with `kicad-cli sch export pdf` |
+| `pn5180_carrier_schematic.pdf/.png` | Renders of the current schematic (re-exported 2026-09-04: `kicad-cli sch export pdf`, then `qlmanage -t -s 3400` on the PDF). Regenerate after any schematic change |
 | `check_netlist.py` | Netlist assertion script. Parses the KiCad 10 pretty-printed netlist and the compact 7/8 layout (fixed 2026-09-04); passes clean on the repo schematic (38 nets, 189 nodes) |
 
 If any of these are missing, say so rather than recreating them from memory.
@@ -203,11 +203,11 @@ If any of these are missing, say so rather than recreating them from memory.
    without pot, but the schematic Value ("MP1584EN module (set 5.0V)"), the BOM CSV,
    README §power and the schematic's DESIGN NOTES all say adjustable, "set the pot to
    5.00 V". Settle with the owner; it changes the U6 BOM line and the assembly notes.
-10. README and the BOM CSV still describe the pre-PCB, pre-JP-removal design: README
-    line 15 "KiCad 7 file format", line 30 "There is no `.kicad_pcb` yet", the Jumpers
-    section and JP1/JP2 BOM rows, `pn5180_carrier_bom.csv` row "JP1, JP2", and the two `pn5180_carrier_schematic.*`
-    renders. The schematic's DESIGN NOTES and title-block comment still mention JP1/JP2
-    and a "BUSY/IRQ mux".
+10. ~~README, BOM CSV, renders and schematic notes still mention JP1/JP2 and KiCad 7.~~
+    Done 2026-09-04: README rewritten for KiCad 10 and the PCB; JP1/JP2 removed from the
+    README, `pn5180_carrier_bom.csv`, the schematic's two DESIGN NOTES texts and the
+    renders. Still stale: schematic title-block comment 1 says "BUSY/IRQ mux" (IRQ went in
+    rev 1.3) — fix in the GUI.
 11. The XIAO as placed does not overhang: its body ends 0.45 mm inside the top edge
     (courtyard on the edge line). Move U5 up ~1.5–2.5 mm for the agreed 1–2 mm USB
     overhang, or relax the rule; either way the two silk_edge_clearance warnings go.

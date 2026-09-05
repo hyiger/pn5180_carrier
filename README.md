@@ -2,38 +2,41 @@
 
 Carrier board that lets 4 or 8 PN5180 breakout modules plug in over ~30 cm cables with
 Molex CLIK-Mate 2.00 mm positive-lock connectors (the white latching style used on the
-Prusa LoveBoard) and share one SPI bus with a Seeed Studio XIAO ESP32C6 socketed in the
-middle of the board. It runs from the printer's 24 V supply through an MP1584EN buck
+Prusa LoveBoard) and share one SPI bus with a Seeed Studio XIAO ESP32C6 socketed at the
+top centre of the board. It runs from the printer's 24 V supply through an MP1584EN buck
 module soldered flat onto the carrier. Every part is SMD except the two 1×7 female
-headers the XIAO sits in. A 74HC138 decodes 3 address lines into
-the 8 chip selects; a 74HC151 muxes the 8 BUSY lines back to a single GPIO. A second
-The PN5180's IRQ pin is not used — BUSY is the only handshake the SPI protocol needs.
+headers the XIAO sits in and the buck module's four through-hole pads. A 74HC138 decodes
+3 address lines into the 8 chip selects; a 74HC151 muxes the 8 BUSY lines back to a
+single GPIO. The PN5180's IRQ pin is not used — BUSY is the only handshake the SPI
+protocol needs.
 
 **GPIO cost: 9 of the XIAO's 11 pins** — SCK, MOSI, MISO, A0, A1, A2, /EN, BUSY, /RST.
 D6 and D7 are spare.
 
-Author: hyiger · Rev 1.3 · KiCad 7 file format (opens in 7, 8 and 9)
+Author: hyiger · Rev 1.3 · KiCad 10 files (saved with 10.0.6; KiCad 9 and older cannot open them)
 
 ## Files
 
 | File | Purpose |
 |---|---|
-| `pn5180_carrier.kicad_pro` | Project file — open this in KiCad |
+| `pn5180_carrier.kicad_pro` | Project file — open this in KiCad 10 |
 | `pn5180_carrier.kicad_sch` | Schematic (single A3 sheet, all symbols embedded) |
+| `pn5180_carrier.kicad_pcb` | 2-layer PCB, 62.5 × 106.5 mm. Layout in progress: a few nets still unrouted, mounting holes not yet placed |
 | `carrier.kicad_sym` + `sym-lib-table` | Project-local symbol library (same symbols, for editing) |
 | `carrier.pretty/` + `fp-lib-table` | Project-local footprints: the XIAO 2×7 socket (geometry from Seeed's OPL library) and the MP1584EN module pads |
 | `pn5180_carrier_schematic.pdf` / `.png` | Rendered schematic, no KiCad needed |
 | `pn5180_carrier_bom.csv` | Full BOM: refs, qty, MPN, Mouser #, footprint, DNP flag |
 | `pn5180_carrier_mouser_order.csv` | One-board order list for Mouser's BOM tool (populated parts + cable-side parts) |
-| `gen_kicad.py` | Generator that produced everything above — edit and re-run to change the design |
-
-There is no `.kicad_pcb` yet: open the PCB editor from the project and use
-*Tools → Update PCB from Schematic* to pull in the footprints.
+| `gerbers/`, `gerbers.zip` | Preview gerber/drill export of the unfinished layout — not a fab package yet |
+| `check_netlist.py` | Asserts the exported netlist against the intended connectivity (`kicad-cli sch export netlist --format kicadsexpr -o net.txt pn5180_carrier.kicad_sch`, then `python3 check_netlist.py net.txt`) |
+| `gen_kicad.py` | Historical generator that produced the first revision (KiCad 7 format). The KiCad files have been hand-edited since and are authoritative — don't re-run it over them |
+| `CLAUDE.md`, `MEMORY.md` | Design guide and decision log: verified part data, layout state, ERC/DRC baseline, open items |
 
 Footprints reference the stock KiCad libraries and every name was verified against
-the 7.0 library set (`Connector_Molex`, `Package_SO`, `Resistor_SMD`, …). If a newer
+the 10.0 library set (`Connector_Molex`, `Package_SO`, `Resistor_SMD`, …). If a newer
 library renames one, reassign it in the footprint tool — nothing in the netlist
-depends on the footprint.
+depends on the footprint. Command-line checks use KiCad's `kicad-cli`: `sch erc`,
+`pcb drc --schematic-parity`, and `sch export netlist` followed by `check_netlist.py`.
 
 ## Connector pinouts
 
@@ -48,7 +51,7 @@ header order before building cables.
 | Pin | Signal | Notes |
 |---|---|---|
 | 1 | 5V | From carrier 5V rail (module TVDD / RF power) |
-| 2 | 3V3 | From carrier LDO via JP2 — see jumpers |
+| 2 | 3V3 | From the carrier LDO (U4), direct |
 | 3 | /RST | Shared by all bays |
 | 4 | NSS | Bay-specific, from 74HC138 output *n* |
 | 5 | MOSI | Shared |
@@ -59,6 +62,10 @@ header order before building cables.
 | 10 | GND | Second return — twist with SCK in the harness |
 
 Bay *n* ↔ J(n+1) ↔ 74HC138 Y*n* ↔ 74HC151 D*n*. Bay 0 is address 000, bay 7 is 111.
+
+Most PN5180 modules expect both 5 V and 3.3 V supplied (3.3 V for VBAT/PVDD, 5 V for the
+RF stage), so the carrier feeds both. If your modules regulate 3.3 V onboard and drive
+that pin as an *output*, leave pin 2 out of the cable rather than paralleling two LDOs.
 
 ### U5: Seeed XIAO ESP32C6 socket (2 × 1×7 female headers, 15.24 mm row spacing)
 
@@ -82,7 +89,7 @@ with the antenna end at the carrier's edge and keep copper off both layers under
 | spare | D7 | 8 | 17 | NC (UART0 RX) |
 | 3V3 out | — | 12 | | NC — the carrier has its own 3V3 LDO |
 | GND | — | 13 | | |
-| 5V | — | 14 | | from carrier 5V via JP1 → D1 |
+| 5V | — | 14 | | from carrier 5V through D1 |
 
 \* GPIO numbers per Seeed's pin diagram; write firmware with the `D0…D10` names from the
 board's `pins_arduino.h` and they can't be wrong. `SPI.begin()` with no arguments uses
@@ -91,8 +98,8 @@ D8/D9/D10.
 **Power path:** Seeed states the XIAO's 5V pin is the raw USB VBUS and that an external
 supply must go through a diode. D1 (PMEG2010AEH, 0.3 V drop at our current) does that, so
 USB can stay plugged in for flashing while the carrier is powered — neither source can
-push into the other. The XIAO's own LDO makes its 3.3 V from ~4.7 V; that's fine. Open JP1
-to run the XIAO from USB only.
+push into the other. The XIAO's own LDO makes its 3.3 V from ~4.7 V; that's fine. With the
+carrier unpowered, USB alone runs the XIAO and D1 keeps VBUS out of the carrier's 5 V rail.
 
 ### J10: 24 V input (Molex 502494-0270, CLIK-Mate 2.00 mm 1×2 right-angle SMT)
 
@@ -159,21 +166,14 @@ so the design takes three precautions:
 Route GND wires as close to SCK as the harness allows. MISO is driven by the PN5180 (slower
 edges) and needs nothing extra. NSS/BUSY see one stub each and are fine.
 
-## Jumpers
-
-| Ref | Default | Function |
-|---|---|---|
-| JP1 | **bridged** | Carrier 5V → D1 → XIAO 5V pin. Leave bridged; D1 already prevents back-feeding USB. Open it only to run the XIAO from USB alone. |
-| JP2 | **bridged** | Routes carrier 3V3 (from U4) to bay pin 2. Most common modules expect both 5V and 3.3V supplied. Open it if your modules regulate 3.3 V onboard and expose it as an *output* (paralleling two LDOs is sloppy, though rarely harmful). |
-
 ## How the selection logic works
 
 - `A0..A2` → 74HC138 address inputs **and** both 74HC151 select inputs.
 - `/EN` → 74HC138 `/E1` (G2A). Low = the addressed bay's NSS goes low; high = every NSS high.
   Wire the library's "NSS" pin to `/EN` and it just works — the library toggles NSS,
   the decoder routes it.
-- `BUSY` (U5 pin 11, GPIO11) is the 74HC151 output = the BUSY of the addressed bay. Wire it
-  to the library's "BUSY" pin.
+- `BUSY` (XIAO D4, symbol pin 5) is the 74HC151 output = the BUSY of the addressed bay. Wire
+  it to the library's "BUSY" pin.
 - `/E2` is grounded, `E3` tied high; 74HC151 `/E` grounded (always enabled).
 - R6/R7 sit between the ESP32 and the SCK/MOSI bus (nets `SCK_IN`/`MOSI_IN` on the ESP32 side).
 - Pull-ups on `/EN` and `/RST` and pull-downs on `A0..A2` define everything while the
@@ -239,13 +239,17 @@ The stock library's `while (digitalRead(BUSY))` loops have no timeout; add one
 
 ## Layout notes
 
+The 2-layer PCB in `pn5180_carrier.kicad_pcb` follows these rules; the current routing
+state and the ERC/DRC baseline are tracked in `MEMORY.md`.
+
 - Ground plane on one layer; SPI signals short, routed as a star or short daisy chain
   from U5 to the bay connectors. With 8 loads plus cable capacitance, ≤ 1 MHz SPI.
-- U5 in the middle, USB end facing whichever edge is reachable, antenna end (opposite the
-  USB) toward the far edge with no copper under it on either layer. The two sockets are
+- U5 at the top centre, USB end at the top board edge, antenna end (opposite the USB)
+  pointing inboard with a copper keep-out on both layers under it. The two sockets are
   plain 1×7 female headers on 15.24 mm centres; the footprint sets that spacing. The XIAO
   also has an external-antenna u.FL if the rack's metal gets in the way.
-- Bay connectors along one board edge, in bay order, so cables don't cross. The 502494
+- Bay connectors down both long edges (J5–J8 left, J1–J4 right), in bay order, so cables
+  don't cross. The 502494
   receptacles are SMT with two large solder-tab pads ("MP" in the footprint) — those tabs,
   not the signal pins, take the cable-pull load, so give them full paste and don't thin
   the copper under them. Right-angle parts: the cable leaves flat along the board plane.
@@ -256,10 +260,10 @@ The stock library's `while (digitalRead(BUSY))` loops have no timeout; add one
   the SPI lines and the XIAO's antenna (it switches at ~1.5 MHz with a small inductor).
 - F1/D2/D3 near J10; C6/C7 and C4 near U4; C1/C2 within a few mm of their IC VCC pins.
 - U4 (SOT-223) with a copper pour on the tab (tab = OUTPUT, part of the 3V3 net); at ~200 mA on 3V3 it dissipates ~0.35 W.
-- Add M3 mounting holes (not in the schematic).
+- M3 mounting holes are still to be added (not in the schematic).
 - For a 4-bay build simply leave J5–J8 (and RN2) unpopulated. Firmware `BAYS = 4`.
 
-## BOM (all SMD)
+## BOM (SMD except the XIAO sockets and U6's pads)
 
 Rev 1.3. Every symbol in the schematic carries `Manufacturer`, `MPN` and `Mouser` fields,
 so KiCad's own BOM export reproduces this table. `pn5180_carrier_mouser_order.csv` can be
@@ -280,8 +284,6 @@ uploaded directly to Mouser's BOM tool.
 | D2 | 1 | Littelfuse SMAJ28A TVS, 28 V standoff, SMA | 576-SMAJ28A | Diode_SMD:D_SMA |
 | D3 | 1 | Nexperia PMEG6030EP Schottky 60 V 3 A (reverse polarity) | 771-PMEG6030EP | Diode_SMD:D_SOD-128 |
 | C8, C9 | 2 | Murata GRM32ER71H106KA12L, 10 µF 50 V X7R 1210 | 81-GRM32ER71H106KA12L | Capacitor_SMD:C_1210_3225Metric_Pad1.33x2.70mm_HandSolder |
-| JP1 | 1 | Solder jumper, open (PCB feature) | — | Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm |
-| JP2 | 1 | Solder jumper, bridged (PCB feature) | — | Jumper:SolderJumper-2_P1.3mm_Bridged_RoundedPad1.0x1.5mm |
 | R1–R5 | 5 | Yageo RC0603FR-0710KL, 10k 1% 0603 | 603-RC0603FR-0710KL | Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder |
 | R6, R7 | 2 | Yageo RC0603FR-0733RL, 33 Ω 1% 0603 (SCK/MOSI series) | 603-RC0603FR-0733RL | Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder |
 | RN1, RN2 | 2 | Yageo YC164-FR-07100KL, 4×100k 1% isolated array | 603-YC164-FR-07100KL | Resistor_SMD:R_Array_Convex_4x0603 |
