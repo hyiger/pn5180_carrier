@@ -3225,7 +3225,7 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "U5 sits on two 1x7 female headers, 15.24 mm apart; USB end over the board edge, antenna end (opposite USB) inboard with no copper under it on either layer."
+	(text "U5 on two 1x7 sockets 15.24 mm apart; USB end at the board edge, antenna inboard, no copper under it."
 		(exclude_from_sim no)
 		(at 243.84 233.68 0)
 		(effects
@@ -3302,7 +3302,7 @@
 		)
 		(uuid "2dc3b27a-6e4e-4392-ab1a-062ebf61715f")
 	)
-	(text "Bays 4..7 (J5..J8) may be left unpopulated for a 4-bay build; RN1/RN2 keep unused BUSY inputs low."
+	(text "4-bay build: leave J5-J8 and RN2 unpopulated."
 		(exclude_from_sim no)
 		(at 243.84 203.2 0)
 		(effects
@@ -3357,7 +3357,7 @@
 		)
 		(uuid "38599eed-ee11-4b61-9168-95503c67f9e4")
 	)
-	(text "XIAO ESP32C6 pins: D8 SCK, D9 MISO, D10 MOSI, D3 ~{EN}, D0 A0, D1 A1, D2 A2, D4 BUSY, D5 ~{RST}; D6/D7 spare."
+	(text "XIAO: D8 SCK, D9 MISO, D10 MOSI, D3 ~{EN}, D0-D2 A0-A2, D4 BUSY, D5 ~{RST}; D6/D7 spare."
 		(exclude_from_sim no)
 		(at 243.84 191.77 0)
 		(effects
@@ -3379,7 +3379,7 @@
 		)
 		(uuid "4bd4690f-a48a-4ceb-b90e-bce8eb6055c2")
 	)
-	(text "Keep SPI <= 1 MHz with 8 bays on shared SCK/MOSI/MISO. Bay pinout matches the module header order."
+	(text "SPI <= 1 MHz, 8 bays on shared SCK/MOSI/MISO; R6/R7 33R source-terminate SCK/MOSI; ~30 cm cables."
 		(exclude_from_sim no)
 		(at 243.84 222.25 0)
 		(effects
@@ -3401,7 +3401,7 @@
 		)
 		(uuid "4dd3b8bf-6903-47c3-b5c8-371fdda41352")
 	)
-	(text "Carrier 5V -> D1 Schottky -> XIAO 5V pin: the XIAO 5V pin is raw USB VBUS, D1 keeps the carrier from back-feeding USB."
+	(text "5V -> D1 -> XIAO 5V pin (raw USB VBUS); D1 blocks back-feed into USB."
 		(exclude_from_sim no)
 		(at 243.84 207.01 0)
 		(effects
@@ -3434,7 +3434,7 @@
 		)
 		(uuid "5818b9b9-539d-4f1c-bcfd-42d3567c775d")
 	)
-	(text "U6: MP1584EN mini module (28V max in) soldered flat on 4 pads. Set its pot to 5.00V BEFORE fitting; lock the pot with a dab of varnish."
+	(text "U6: MP1584EN module (28V max) flat on 4 THT pads; set to 5.00V before fitting, lock the pot."
 		(exclude_from_sim no)
 		(at 243.84 218.44 0)
 		(effects
@@ -3544,7 +3544,7 @@
 		)
 		(uuid "7d571146-18c0-40e8-91dc-96c149336e90")
 	)
-	(text "Bay select: A0..A2 -> 74HC138 address; ~{EN} (active low) = NSS of the addressed bay only."
+	(text "Bay select: A0-A2 -> 74HC138; ~{EN} low = NSS of the addressed bay. Change A0-A2 only while ~{EN} is high."
 		(exclude_from_sim no)
 		(at 243.84 195.58 0)
 		(effects
@@ -3578,7 +3578,7 @@
 		)
 		(uuid "833f8071-45d4-4f3b-bcf8-7dff233fae0c")
 	)
-	(text "Bay connector (J1..J8): 1=5V 2=3V3 3=~{RST} 4=NSS 5=MOSI 6=MISO 7=SCK 8=BUSY 9=GND 10=GND (2nd return, twist with SCK)."
+	(text "Bay pins: 1 5V, 2 3V3, 3 ~{RST}, 4 NSS, 5 MOSI, 6 MISO, 7 SCK, 8 BUSY, 9 GND, 10 GND (twist with SCK)."
 		(exclude_from_sim no)
 		(at 243.84 237.49 0)
 		(effects
@@ -3600,7 +3600,7 @@
 		)
 		(uuid "94c6bbf7-c054-4e5f-bd67-c3d02e577db4")
 	)
-	(text "BUSY = 74HC151 output for the addressed bay. Change A0..A2 only while ~{EN} is high."
+	(text "BUSY = 74HC151 output for the addressed bay; RN1/RN2 hold unused BUSY inputs low."
 		(exclude_from_sim no)
 		(at 243.84 199.39 0)
 		(effects
@@ -3655,7 +3655,7 @@
 		)
 		(uuid "abafdd04-6be3-4b3b-9321-bf3152bbe5d0")
 	)
-	(text "U5 pins 1-7 = D0..D6 (USB end first), 8-11 = D7..D10, 12 = 3V3 out (NC), 13 = GND, 14 = 5V/VBUS (USB end)"
+	(text "U5 pins: 1-7 D0-D6 (USB end first), 8-11 D7-D10, 12 3V3 out (NC), 13 GND, 14 5V/VBUS."
 		(exclude_from_sim no)
 		(at 243.84 241.3 0)
 		(effects
@@ -3666,7 +3666,7 @@
 		)
 		(uuid "abba761a-e83a-4831-83f4-9bd8f75c08e6")
 	)
-	(text "Power: 24V from the printer PSU on J10 (~0.5 A). F1 1A -> D2 TVS -> D3 reverse Schottky -> C8/C9 -> U6 MP1584EN module -> 5V."
+	(text "Power: 24V on J10 (<0.5 A) -> F1 1A -> D2 TVS -> D3 reverse Schottky -> C8/C9 -> U6 MP1584EN -> 5V."
 		(exclude_from_sim no)
 		(at 243.84 214.63 0)
 		(effects
@@ -3677,7 +3677,7 @@
 		)
 		(uuid "b604a4a5-34dc-443d-8116-5b5eb16fbbc1")
 	)
-	(text "All SMD except the XIAO sockets and U6's four THT pads. Bays: Molex CLIK-Mate 1.50mm dual-row RA receptacles 503148-1090 (2x5), housings 503149-1000, terminals 502579 (24-28 AWG). J10: CLIK-Mate 2.00mm 502494-0270, housing 502439-0200, terminals 502438."
+	(text "Bays J1-J8: CLIK-Mate 1.50mm 2x5 RA 503148-1090; housing 503149-1000; terminals 502579 (24-28 AWG)."
 		(exclude_from_sim no)
 		(at 243.84 226.06 0)
 		(effects
@@ -3699,7 +3699,7 @@
 		)
 		(uuid "c830ee7f-76f9-4a41-81d7-7087ed669fb4")
 	)
-	(text "Carrier 3V3 feeds bay pin 2 directly. Leave pin 2 out of the cable if your modules regulate 3V3 onboard."
+	(text "3V3 (U4) feeds bay pin 2 directly; omit that wire if the module regulates its own 3V3."
 		(exclude_from_sim no)
 		(at 243.84 210.82 0)
 		(effects
@@ -3776,7 +3776,7 @@
 		)
 		(uuid "e3f3ad51-44fb-485c-bd71-64785e60e805")
 	)
-	(text "Cables ~30 cm: R6/R7 (33R) source-terminate SCK/MOSI for the 8-way fan-out. SPI <= 1 MHz, ESP32 GPIO drive strength low."
+	(text "J10: CLIK-Mate 2.00mm 1x2 502494-0270; housing 502439-0200; terminals 502438. All SMD except U5 sockets, U6 pads."
 		(exclude_from_sim no)
 		(at 243.84 229.87 0)
 		(effects
