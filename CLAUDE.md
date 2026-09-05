@@ -41,6 +41,7 @@ part data before touching anything.
 | `pn5180_carrier.kicad_prl` | KiCad's per-user local settings (layer visibility etc.); not design content, never hand-edit |
 | `.history/` | KiCad 10 local-history snapshots (a git repo KiCad manages itself, ~590 commits; File > Local History in the GUI). `git log`/`show`/`rev-list` there are safe; `git status`/`diff`/`add`/`gc` rewrite its index — don't |
 | `gerbers/`, `gerbers.zip` | Fab export from 2026-09-04 21:46 (zip 21:48). Stale: made before routing finished, before mounting holes, and with the old skewed outline (fixed 23:25). Regenerate from the PCB, never edit |
+| `.gitignore` | Keeps `.history/`, `*.kicad_prl`, lock files, kicad-cli check outputs and the stray file below out of git. Public repo: https://github.com/hyiger/pn5180_carrier — commit only as `hyiger` with the GitHub no-reply address, never a real name or email |
 | `~pn5180_carrier.kicad_pro.lck`, `rites next to this script#` | Not design content. The first is KiCad's lock file (expected while the GUI has the project open, stale otherwise). The second is a 57-byte shell-redirect accident holding one line of gen_kicad.py — for the owner to delete |
 | `carrier.kicad_sym`, `sym-lib-table` | Project-local symbols |
 | `carrier.pretty/`, `fp-lib-table` | Project-local footprints: XIAO 2×7 socket, MP1584EN module pads |

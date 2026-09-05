@@ -9,7 +9,9 @@ Updated 2026-09-04 for the KiCad 10 migration, with measured layout and check st
 
 ## Owner and purpose
 
-- Owner: **hyiger** (use that name on documents, never a real name). Experienced FDM
+- Owner: **hyiger** (use that name on documents, never a real name or email; git commits
+  as `hyiger` with the GitHub no-reply address). Public repo since 2026-09-04:
+  https://github.com/hyiger/pn5180_carrier (branch `main`). Experienced FDM
   practitioner and developer; runs a Prusa Core One and a Bambu H2D; maintains Filament DB
   (TypeScript/Electron, NFC spool tags via OpenPrintTag/SLIX2, ACR1552U reader, PN5180
   multi-reader spec) and PrusaSlicer/OrcaSlicer profile tooling. Comfortable with SMD
