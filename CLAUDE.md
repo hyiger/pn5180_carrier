@@ -45,7 +45,7 @@ part data before touching anything.
 | `~pn5180_carrier.kicad_pro.lck`, `rites next to this script#` | Not design content. The first is KiCad's lock file (expected while the GUI has the project open, stale otherwise). The second is a 57-byte shell-redirect accident holding one line of gen_kicad.py — for the owner to delete |
 | `carrier.kicad_sym`, `sym-lib-table` | Project-local symbols |
 | `carrier.pretty/`, `fp-lib-table` | Project-local footprints: XIAO 2×7 socket, MP1584EN module pads, CLIK-Mate 503148-1090 2×5 receptacle (generator script: scratch `gen_clikmate_2x5_fp.py`, geometry in the footprint's `descr`) |
-| `README.md` | Pinouts, GPIO map, jumpers, firmware sketch, layout notes, BOM |
+| `README.md` | Pinouts, GPIO map, cables, firmware sketch, layout notes, BOM |
 | `pn5180_carrier_bom.csv`, `pn5180_carrier_mouser_order.csv` | Generated BOM and Mouser import list |
 | `gen_kicad.py` | Historical generator (see above) |
 | `pn5180_carrier_schematic.pdf/.png` | Renders of the current schematic (re-exported 2026-09-04: `kicad-cli sch export pdf`, then `qlmanage -t -s 3400` on the PDF). Regenerate after any schematic change |
@@ -120,8 +120,9 @@ If any of these are missing, say so rather than recreating them from memory.
   1 A/contact; housing 503149-1000, terminals 502579-0000 24–28 AWG) — switched from the
   2.00 mm 1×10 502494-1070 on 2026-09-05 (schematic rev 1.4; PCB not yet updated). Project
   footprint `carrier:Molex_CLIK-Mate_503148-1090_2x05-1MP_P1.50mm_Horizontal`: ten
-  0.55 × 2.70 pads at 0.75 mm in one line at the rear, nail pads at the front corners,
-  body 11.8 × 8.75 mm; built from Molex's catalog drawing — the nail-pad fore-aft position
+  0.55 × 2.70 pads at 0.75 mm in one line at the rear, offset 0.375 mm toward pin 10 (the
+  even-row tails jog sideways), nail pads at the front corners reaching the mating face,
+  body 11.8 × 8.75 mm; built from Molex's catalog drawing — the nail-to-pad-1 dimension
   and the sequential 1…10 pad order are to be confirmed against SD-503148-1090. Pinout
   1=5V 2=3V3 3=/RST 4=NSS 5=MOSI 6=MISO 7=SCK 8=BUSY 9=GND 10=GND (second return; twist
   with SCK in the harness). Pins 1–9 match the common red PN5180 module header order; in
@@ -149,7 +150,7 @@ If any of these are missing, say so rather than recreating them from memory.
 - Bottom layer = one unbroken GND plane. Top = components, all signals, power as wide
   traces, plus a stitched GND pour (thermal reliefs on THT pads; remove islands).
 - Power distribution plan (drawn for the 1×10 connectors; re-derive after the 2×5 swap,
-  which shortens each connector from 22.6 to 11.8 mm and moves its signal pads into a
+  which shortens each connector from 24.0 to 11.8 mm and moves its signal pads into a
   single 0.75 mm-pitch row at the rear): both rails run down the centre corridor to the bottom edge,
   fork, and climb each connector column in the crossing-free lanes outboard of the pads
   (5 V in the pad/tab channel, 3V3 between tabs and board edge). The two bottom-edge
@@ -175,7 +176,8 @@ If any of these are missing, say so rather than recreating them from memory.
   never reuse or renumber; the PCB layout depends on them.
 - Custom footprints go in `carrier.pretty` with a `descr` stating the source of the
   geometry (Seeed OPL library for the XIAO, the module's dimension drawing for the
-  MP1584EN).
+  MP1584EN, Molex's catalog drawing for the 503148-1090 — to be confirmed on
+  SD-503148-1090).
 - Mouser numbers follow prefix + MPN (595 TI, 538 Molex, 603 Yageo, 81 Murata, 710
   Würth, 771 Nexperia, 713 Seeed, 576 Littelfuse); a few were only pattern-derived —
   MEMORY.md lists which were verified on a product page.
@@ -189,7 +191,8 @@ If any of these are missing, say so rather than recreating them from memory.
    52–158.5). The stored zone fills still stop at the old slanted edge: **refill zones in
    the GUI** before the next DRC/export. `gerbers/` predates the fix.
 2. Finish PCB routing per the power plan. DRC on 2026-09-04 still lists one open each
-   on +3V3, /RST, MOSI, MISO and SCK. (No further outline move is needed.)
+   on +3V3, /RST, MOSI, MISO and SCK. (No further outline move is needed — re-check the
+   edge clearances after item 12, which changes the connector pads.)
 3. Add mounting holes; connect the five orphaned top-pour GND pads (R2.2, R3.2, R4.2,
    U1.5, J1.9 each sit on a pour island with no via — U1.5 is the 74HC138's /E2, so a
    floating one disables every chip select); stitch the top pour (its main island has no
@@ -228,3 +231,8 @@ If any of these are missing, say so rather than recreating them from memory.
     outboard and the 0.75 mm pad row inboard, re-route the columns and the power lanes,
     refill zones, re-run DRC, regenerate `gerbers/`. Before fab, confirm the footprint's
     nail-pad position and pad order against Molex SD-503148-1090 (see MEMORY.md item 12).
+13. **F1 fuse family.** The BOM calls Littelfuse 0453001.MR a "1 A slow-blow", but the
+    NANO2 451/453 series is Littelfuse's very-fast-acting family; Slo-Blo is 452/454
+    (0454001.MR, footprint `Fuse:Fuse_Littelfuse-NANO2-452_454`). Either keep the fast fuse
+    (fix the description and check hot-plug inrush into C8/C9 plus the module's input
+    capacitors) or switch the part — owner's call; verify on the Littelfuse datasheet.

@@ -5,7 +5,8 @@ Context and decision log for whoever picks this up. Written on the evening of 20
 ran on UTC) by the design session this log calls "rev 1.5" — the script itself only
 stamps rev 1.3, as do the sheet title block and README; the owner has hand-edited since.
 Updated 2026-09-04 for the KiCad 10 migration, with measured layout and check status
-(history item 11, "Layout state", "Check status"). All clock times below are local.
+(history item 11, "Layout state", "Check status"), and 2026-09-05 for the switch of the
+bay connectors to the 2×5 CLIK-Mate (item 12). All clock times below are local.
 
 ## Owner and purpose
 
@@ -112,12 +113,20 @@ Updated 2026-09-04 for the KiCad 10 migration, with measured layout and check st
     was generated from Molex's catalog drawing (Kyohritsu-hosted Molex Japan catalog,
     p.45): 10 pads 0.55 × 2.70 at 0.75 mm in ONE line at the rear (the two contact rows
     interleave into one lead row), nail pads 1.20 × 4.65 at X ±5.30 toward the front,
-    body 11.8 × 8.75, height 9.15. Two things are read, not dimensioned, on that drawing
-    and must be confirmed on Molex SD-503148-1090 (molex.com is unreachable from the tool
-    network; it works in a normal browser): the nail pads' fore-aft position (taken as
-    3.95 mm behind the rear pad edge, ±0.2 mm) and the sequential 1…10 order along the
-    pad line (the drawing labels only "circuit 1" right / "circuit N" left, mating face
-    toward the viewer's bottom). Schematic fields, BOM CSV, Mouser CSV, README updated;
+    body 11.8 × 8.75, height 9.15. A 600-dpi re-measurement of that drawing (verification
+    pass, 2026-09-05) showed the pad line is NOT centred: the odd-circuit tails exit
+    straight under the 1.5 mm contact columns (0, ±1.5, ±3.0) and the even-circuit tails
+    jog 0.75 mm toward circuit N, so pad k sits at X = 3.0 − 0.75(k−1) (pad 1 +3.0,
+    pad 10 −3.75) — a 0.375 mm shift that would otherwise have put every tail on a pad
+    gap; and the nail pads reach the mating-face datum (rear edge 4.10 mm behind the pad
+    rear edge, centre Y +2.05). Both applied; courtyard front extended to +5.0 because the
+    housing may protrude ~0.4 mm past the nails. Still to confirm on Molex SD-503148-1090
+    (molex.com is unreachable from the tool network; fine in a normal browser): the
+    nail-to-pad-1 dimension and the sequential 1…10 order along the pad line (the drawing
+    labels only "circuit 1" right / "circuit N" left, mating face toward the viewer's
+    bottom). KiCad's DRC does not apply the netclass clearance between pads of one
+    footprint — tested on a scratch board with the project rules, 0 violations at the
+    0.20 mm pad gap. Schematic fields, BOM CSV, Mouser CSV, README updated;
     title-block rev bumped to 1.4; netlist (38/189/0) and ERC (82) unchanged. The PCB
     still has the 1×10 footprints and routing — open item.
 
@@ -127,7 +136,7 @@ Rows without a date come from the 2026-09-03 design session.
 
 | Item | Value | Verified how |
 |---|---|---|
-| CLIK-Mate 2.00 RA 1×10 | Molex 502494-1070 | KiCad footprint exists; Molex listing |
+| CLIK-Mate 2.00 RA 1×10 (retired 2026-09-05, still on the PCB) | Molex 502494-1070; stock KiCad footprint body 24.0 mm long | KiCad footprint exists; Molex listing |
 | CLIK-Mate dual row | only in 1.50 mm; RA SMT 503148-xx90 (10–24 ckt, 1.0 A), vertical SMT 503154-xx90 (8–34 ckt, 2.0 A), housing 503149-xx00, terminals 502579-0000 (24–28 AWG) / 503429-0000 (26–30 AWG); 30 cycles; no stock KiCad footprint. (Earlier note here had "-xx70" and "terminal 502578" — wrong.) | Molex brochure 987650-3302, Molex Japan catalog drawings, Mouser pages 2026-09-05 |
 | 503148-1090 land pattern | 10 × 0.55 × 2.70 pads at 0.75 mm in one line at the rear; nails 1.20 × 4.65 at X ±5.30 toward the front (fore-aft position scaled); body 11.8 × 8.75, h 9.15; circuit 1 at the right in the top view with the mating face down | Molex Japan catalog p.45 (Kyohritsu mirror), 2026-09-05 — confirm on SD-503148-1090 |
 | XIAO ESP32C6 mechanicals | 2×7 THT, 15.24 mm rows, USB end = pins 1/14, 21 × 17.8 mm | Seeed OPL KiCad lib |
@@ -143,9 +152,9 @@ Rows without a date come from the 2026-09-03 design session.
 | Würth 1×7 socket | 61300711821 (WR-PHD series confirmed) | search |
 | JLCPCB 2-layer limits | 0.127 trace/space, 0.3 drill, via 0.45–0.5 pad, 0.5 hole-hole, 0.2 edge, silk 0.15/1.0 | JLC capability pages |
 | KiCad on the owner's Mac | 10.0.6; `kicad-cli` at `/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli`; stock libs under `…/Contents/SharedSupport/{symbols,footprints,3dmodels}`; bundled Python with `pcbnew` under `…/Contents/Frameworks/Python.framework/Versions/Current/bin/python3` | run 2026-09-04 |
-| Stock footprints used by the PCB, all present in the 10.0 library | Capacitor_SMD C_0603/C_1210 HandSolder, Resistor_SMD R_0603 HandSolder + R_Array_Convex_4x0603, Diode_SMD D_SMA/D_SOD-123/D_SOD-128, Fuse_Littelfuse-NANO2-451_453, SOIC-16_3.9x9.9mm_P1.27mm, SOT-223-3_TabPin2, Molex_CLIK-Mate_502494-0270 and -1070 Horizontal | file check 2026-09-04 |
+| Stock footprints used by the PCB (pre-swap: J1–J8 still the 1×10 502494-1070), all present in the 10.0 library | Capacitor_SMD C_0603/C_1210 HandSolder, Resistor_SMD R_0603 HandSolder + R_Array_Convex_4x0603, Diode_SMD D_SMA/D_SOD-123/D_SOD-128, Fuse_Littelfuse-NANO2-451_453, SOIC-16_3.9x9.9mm_P1.27mm, SOT-223-3_TabPin2, Molex_CLIK-Mate_502494-0270 and -1070 Horizontal | file check 2026-09-04 |
 | Board outline | Rectangle, edge-line centres X 108.0–170.5, Y 52.0–158.5 → 62.5 × 106.5 mm, 0.05 mm stroke (bottom-right corner was at x 170.0 from 18:28 until fixed 23:25) | pcbnew 2026-09-04 23:25 |
-| Connector tab pad to board edge | J5–J8: tab pads reach x 110.10–110.15, 2.10–2.15 mm to the edge. J1–J4: tab pads reach x 168.30–168.35, 2.15–2.20 mm. End connectors' tab pads are 1.25 mm from the top/bottom edges; J10's tab pads 0.65 mm from the bottom edge | pcbnew 2026-09-04 23:25 |
+| Connector tab pad to board edge (1×10 footprints, pre-swap — re-measure after the 2×5 re-placement) | J5–J8: tab pads reach x 110.10–110.15, 2.10–2.15 mm to the edge. J1–J4: tab pads reach x 168.30–168.35, 2.15–2.20 mm. End connectors' tab pads are 1.25 mm from the top/bottom edges; J10's tab pads 0.65 mm from the bottom edge | pcbnew 2026-09-04 23:25 |
 | Power netclass patterns | `+5V`, `+3V3`, `+24V`, `5V_*`, `24V_*`, `*D2-K*` (Default 0.25/0.25 via 0.6/0.3; Power 0.8/0.25 via 0.8/0.4) | .kicad_pro 2026-09-04 |
 | Rasteriser | `cairosvg` absent everywhere; `qlmanage -t -s 2400 -o existing_dir file` → `file.png` works for PDF, footprint SVGs and the portrait board SVG (square render — crops the A3 schematic SVG, use the PDF); Pillow 12 in Homebrew python3 3.14 only | run 2026-09-04 |
 
@@ -154,7 +163,8 @@ Rows without a date come from the 2026-09-03 design session.
 Bay connector J1–J8: 1 5V · 2 3V3 · 3 /RST · 4 NSS · 5 MOSI · 6 MISO · 7 SCK · 8 BUSY ·
 9 GND · 10 GND. Bay *n* = J(n+1) = 74HC138 Y*n* = 74HC151 D*n* = RN(1+n÷4) element (n mod 4)+1.
 Right-hand connectors are rotated 180° relative to the left column (absolute +90° vs −90°),
-so pin 1 is at the bottom on J1–J4 and at the top on J5–J8.
+so pin 1 is at the bottom on J1–J4 and at the top on J5–J8 (1×10 placement, pre-swap —
+re-check after the 2×5 re-placement).
 
 XIAO: D0 A0, D1 A1, D2 A2, D3 /EN, D4 BUSY, D5 /RST, D6 spare, D7 spare, D8 SCK, D9 MISO,
 D10 MOSI. GPIO numbers per Seeed: D0=0 D1=1 D2=2 D3=21 D4=22 D5=23 D6=16 D7=17 D8=19
@@ -287,7 +297,8 @@ D9=20 D10=18 (write code with the D names).
 
 - ~~Move the board outline out 0.5 mm per side?~~ Done by the owner on 2026-09-04
   18:28–18:29, by 1.5 mm per side; tab-pad-to-edge is now 2.10–2.15 mm left, 2.15–2.20 mm
-  right (pcbnew, after the 23:25 corner fix) and the 3V3 lane fits.
+  right (pcbnew, after the 23:25 corner fix) and the 3V3 lane fits. (1×10 figures —
+  re-measure after the 2×5 re-placement.)
 - ~~Straighten the right edge?~~ Owner chose x = 170.5; done 23:25. Refill zones and
   re-export gerbers in the GUI.
 - Delete PWR_FLAG #FLG01 on U6 OUT+ (the one ERC error)? Update the embedded `power:`
@@ -318,5 +329,9 @@ D9=20 D10=18 (write code with the D names).
 - Move J10 to the 1.50 family too (502585-0270 receptacle, 502578-0200 housing, same
   502579 terminals — one terminal type, 24 V input ≤ 0.4 A)? Vertical 503154-1090 (2 A,
   top entry) instead of the right-angle 503148-1090?
+- F1: the BOM's Littelfuse 0453001.MR is in the NANO2 451/453 very-fast-acting family,
+  not Slo-Blo (that is 452/454, e.g. 0454001.MR) — keep fast and fix the description, or
+  switch part and footprint? (Raised by the 2026-09-05 verification pass; check the
+  Littelfuse datasheet.)
 - Retire `gen_kicad.py`, or port the JP1/JP2 removal and any other hand edits into it?
 - 4-bay build variant: J5–J8 and RN2 unpopulated, `BAYS = 4` in firmware — document?

@@ -21,13 +21,13 @@ Author: hyiger · Rev 1.4 · KiCad 10 files (saved with 10.0.6; KiCad 9 and olde
 |---|---|
 | `pn5180_carrier.kicad_pro` | Project file — open this in KiCad 10 |
 | `pn5180_carrier.kicad_sch` | Schematic (single A3 sheet, all symbols embedded) |
-| `pn5180_carrier.kicad_pcb` | 2-layer PCB, 62.5 × 106.5 mm. Layout in progress: a few nets still unrouted, mounting holes not yet placed |
+| `pn5180_carrier.kicad_pcb` | 2-layer PCB, 62.5 × 106.5 mm. Layout in progress: a few nets still unrouted, mounting holes not yet placed, and J1–J8 still carry the old 1×10 502494-1070 footprints — the 2×5 swap (schematic rev 1.4) is pending |
 | `carrier.kicad_sym` + `sym-lib-table` | Project-local symbol library (same symbols, for editing) |
 | `carrier.pretty/` + `fp-lib-table` | Project-local footprints: the XIAO 2×7 socket (geometry from Seeed's OPL library), the MP1584EN module pads, and the CLIK-Mate 503148-1090 2×5 receptacle (from Molex's catalog drawing — KiCad ships no dual-row CLIK-Mate footprint) |
 | `pn5180_carrier_schematic.pdf` / `.png` | Rendered schematic, no KiCad needed |
 | `pn5180_carrier_bom.csv` | Full BOM: refs, qty, MPN, Mouser #, footprint, DNP flag |
 | `pn5180_carrier_mouser_order.csv` | One-board order list for Mouser's BOM tool (populated parts, the two XIAO sockets, and cable-side parts with spare terminals) |
-| `gerbers/`, `gerbers.zip` | Preview gerber/drill export of the unfinished layout — not a fab package yet |
+| `gerbers/`, `gerbers.zip` | Preview gerber/drill export of the unfinished layout, still with the 1×10 connectors — not a fab package |
 | `check_netlist.py` | Asserts the exported netlist against the intended connectivity (`kicad-cli sch export netlist --format kicadsexpr -o net.txt pn5180_carrier.kicad_sch`, then `python3 check_netlist.py net.txt`) |
 | `gen_kicad.py` | Historical generator that produced the schematic, symbol library, footprints and BOM through rev 1.3 (KiCad 7 format). The KiCad files have been hand-edited since and are authoritative — don't re-run it over them |
 | `CLAUDE.md`, `MEMORY.md` | Design guide and decision log: verified part data, layout state, ERC/DRC baseline, open items |
@@ -43,16 +43,21 @@ depends on the footprint. Command-line checks use KiCad's `kicad-cli`: `sch erc`
 
 ### J1–J8: bay connectors (Molex 503148-1090, CLIK-Mate 1.50 mm 2×5 dual-row right-angle SMT)
 
-Cavity *n* of the 503149-1000 housing is signal *n*. Molex numbers the two rows as stacked
-pairs — odd circuits (1, 3, 5, 7, 9) in one row, even circuits (2, 4, 6, 8, 10) in the
-other — so 5V sits over 3V3, /RST over NSS, MOSI over MISO, SCK over BUSY, and the two GNDs
-share the last column. Signals 1–9 keep the order of the 9-pin header on the common red
-PN5180 module, so the module end of each cable is a straight 1-to-9 run plus the second
-GND. On the PCB the receptacle's ten leads come out in one 0.75 mm-pitch line, numbered
-1 to 10 from the pin-1 end (chamfer and triangle on the footprint). Pin 10 is a second
-GND: run it as a separate wire twisted with SCK and crimp both returns into the module's
-GND at the far end, which tightens the SCK return loop over the 30 cm. Verify the module's
-header order, and the cavity numbering on Molex's 503149 drawing, before building cables.
+Build cables by Molex circuit number: cavity *n* of the 503149-1000 housing is signal *n*,
+and signals 1–9 follow the first nine positions of the common red PN5180 module's header,
+so the module end is a straight 1-to-9 run plus the second GND (cavity 10 into the same
+module GND as cavity 9). Molex's catalog drawings number the two rows as stacked pairs —
+odd circuits (1, 3, 5, 7, 9) in one row, even (2, 4, 6, 8, 10) in the other — which puts
+5V over 3V3, /RST over NSS, MOSI over MISO, SCK over BUSY and the two GNDs in the last
+column. That pairing and the receptacle's lead order are read off the drawings rather than
+dimensioned, so before crimping the first cable confirm on Molex's 503149/503148 sales
+drawings which end is circuit 1 (and from which face the drawing looks), which row carries
+the odd circuits, and the 502579 terminal's insertion orientation. On the PCB the
+receptacle's ten leads come out in one 0.75 mm-pitch line, numbered 1 to 10 from the pin-1
+end (chamfer and triangle on the footprint), offset half a pitch toward pin 10 because the
+even-row tails jog sideways. Pin 10 is a second GND: run it as a separate wire twisted with
+SCK and crimp both returns into the module's GND at the far end, which tightens the SCK
+return loop over the 30 cm. Verify the module's header order before building cables.
 
 | Pin | Signal | Notes |
 |---|---|---|
@@ -149,18 +154,21 @@ Three things about this module on a 24 V rail:
 ### Cables (~30 cm)
 
 Bay cable: 503149-1000 dual-row housing at the carrier with 10 × 502579 terminals on
-24–28 AWG stranded wire — the cavity takes insulation up to 1.28 mm OD, so use thin-wall
-UL1061/UL1571-type wire (common UL1007 24 AWG is too fat); 24 AWG for 5V/GND is plenty at
-≤ 0.25 A per bay — and a 2.54 mm DuPont-style female on the module end (or solder to the
-module header). Power: the 24 V cable stays on the 2.00 mm family, 502439-0200 housing
+24–28 AWG stranded wire — the terminal takes insulation of 0.78–1.28 mm OD, so use
+thin-wall UL1061/UL1571-type wire and check the specific wire's maximum OD against 1.28 mm
+(common UL1007 24 AWG at ~1.5 mm is too fat, and some UL1061 24 AWG is specified at
+1.3 mm); 24 AWG for 5V/GND is plenty at ≤ 0.25 A per bay — and a 2.54 mm DuPont-style
+female on the module end (or solder to the module header). Power: the 24 V cable stays on the 2.00 mm family, 502439-0200 housing
 with 502438 terminals on 22 AWG. The XIAO is socketed on the carrier, so bay and power
 cables are the only cables.
 
 The housing latches inside the receptacle (the CLIK; one inner lock on the 10-circuit
 housing) and releases with a squeeze — no tools. Molex's hand crimpers are expensive
-(200218-7400 for the 1.50 mm 502579, 63819-2800 for the 2.00 mm 502438); both are small
-open-barrel terminals and a generic ratchet crimper for 1.5–2.0 mm-class terminals
-(PA-09 / SN-2549 type) does the job. Molex also sells pre-crimped CLIK-Mate 1.50 leads
+(distributor listings name 200218-7400 for the 1.50 mm 502579 and 63819-2800 for the
+2.00 mm 502438 — not checked against Molex's tooling spec); both are small open-barrel
+terminals and a small-barrel ratchet crimper (Engineer PA-09 or an IWISS SN-01BM-class
+tool) does the job — pull-test the first few crimps, because with 24–28 AWG in a 1.5 mm
+terminal the tool is what makes or breaks a cable. Molex also sells pre-crimped CLIK-Mate 1.50 leads
 (79758-1011: 300 mm, 24 AWG UL1061, terminal on both ends, packs of 10 at RS) — cut one
 end off and solder it to the module header if you'd rather skip crimping.
 
@@ -269,7 +277,10 @@ state and the ERC/DRC baseline are tracked in `MEMORY.md`.
   pads ("MP" in the footprint) at the front corners — the nails, not the signal pins, take
   the cable-pull load, so give them full paste and don't thin the copper under them.
   Right-angle parts: the cable leaves flat along the board plane. The 2×5 body is 11.8 mm
-  long against the old 1×10's 22.6 mm, so the connector columns can tighten up.
+  long against the old 1×10's 24.0 mm, so the connector columns can tighten up. **The
+  board still carries the 1×10 footprints and their routing**: run Update PCB from
+  Schematic, re-place J1–J8 with the nail pads outboard and the pad row inboard, re-route,
+  refill zones, run DRC, then regenerate the gerbers (CLAUDE.md open item 12).
 - R6/R7 within a few mm of U5 pins 9/11 (D8 SCK / D10 MOSI), before the traces fan out.
 - U1/U2 near U5 (short A0–A2, /EN, BUSY traces); the eight NSS/BUSY lines then run out
   to the connector edge.
@@ -322,7 +333,9 @@ Cable side:
 
 Stock check on Mouser, 2026-09-04/05: 503148-1090 1,696 in stock, minimum 1, $1.98 at 10;
 503149-1000 7,865, minimum 1, $0.44 at 10; 502579-0000 cut strip 33,700, minimum 100,
-$5.70 per 100. DigiKey, Arrow and Newark also list the receptacle and housing at minimum 1.
+$5.70 per 100. An aggregator snapshot the same day showed the receptacle at DigiKey
+(11,852, minimum 1), Newark (63, minimum 1) and Arrow (6,046), and the housing at Newark
+(6,475, minimum 10); no obsolescence notice on any of these parts.
 The finer 503429-0000 terminal (26–30 AWG) is reel-only (20,000) — don't spec it. The
 vertical (top-entry) dual-row receptacle is 503154-1090 (2 A/contact, a two-row land
 pattern); the right-angle part used here is rated 1.0 A per contact, 30 mating cycles — a
