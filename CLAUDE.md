@@ -44,7 +44,7 @@ part data before touching anything.
 | `.gitignore` | Keeps `.history/`, `*.kicad_prl`, lock files, kicad-cli check outputs and the stray file below out of git. Public repo: https://github.com/hyiger/pn5180_carrier — commit only as `hyiger` with the GitHub no-reply address, never a real name or email |
 | `~pn5180_carrier.kicad_pro.lck`, `rites next to this script#` | Not design content. The first is KiCad's lock file (expected while the GUI has the project open, stale otherwise). The second is a 57-byte shell-redirect accident holding one line of gen_kicad.py — for the owner to delete |
 | `carrier.kicad_sym`, `sym-lib-table` | Project-local symbols |
-| `carrier.pretty/`, `fp-lib-table` | Project-local footprints: XIAO 2×7 socket, MP1584EN module pads |
+| `carrier.pretty/`, `fp-lib-table` | Project-local footprints: XIAO 2×7 socket, MP1584EN module pads, CLIK-Mate 503148-1090 2×5 receptacle (generator script: scratch `gen_clikmate_2x5_fp.py`, geometry in the footprint's `descr`) |
 | `README.md` | Pinouts, GPIO map, jumpers, firmware sketch, layout notes, BOM |
 | `pn5180_carrier_bom.csv`, `pn5180_carrier_mouser_order.csv` | Generated BOM and Mouser import list |
 | `gen_kicad.py` | Historical generator (see above) |
@@ -116,9 +116,16 @@ If any of these are missing, say so rather than recreating them from memory.
 
 ## Electrical design, in one screen
 
-- **Bays J1–J8**: Molex CLIK-Mate 2.00 mm right-angle SMT, 502494-1070 (1×10). Pinout
+- **Bays J1–J8**: Molex CLIK-Mate 1.50 mm dual-row right-angle SMT, 503148-1090 (2×5,
+  1 A/contact; housing 503149-1000, terminals 502579-0000 24–28 AWG) — switched from the
+  2.00 mm 1×10 502494-1070 on 2026-09-05 (schematic rev 1.4; PCB not yet updated). Project
+  footprint `carrier:Molex_CLIK-Mate_503148-1090_2x05-1MP_P1.50mm_Horizontal`: ten
+  0.55 × 2.70 pads at 0.75 mm in one line at the rear, nail pads at the front corners,
+  body 11.8 × 8.75 mm; built from Molex's catalog drawing — the nail-pad fore-aft position
+  and the sequential 1…10 pad order are to be confirmed against SD-503148-1090. Pinout
   1=5V 2=3V3 3=/RST 4=NSS 5=MOSI 6=MISO 7=SCK 8=BUSY 9=GND 10=GND (second return; twist
-  with SCK in the harness). Pins 1–9 match the common red PN5180 module header order.
+  with SCK in the harness). Pins 1–9 match the common red PN5180 module header order; in
+  the 2×5 housing odd circuits sit in one row and even in the other (5V over 3V3, …).
 - **U1 74HC138**: A0–A2 + /EN (G2A) → NSS0–7. G2B grounded, G1 high.
 - **U2 74HC151**: BUSY0–7 → BUSY; selects share A0–A2. RN1/RN2 = 4×100k pull-downs.
 - **U5 XIAO ESP32C6** on two 1×7 sockets (15.24 mm rows): D8 SCK, D9 MISO, D10 MOSI
@@ -141,7 +148,9 @@ If any of these are missing, say so rather than recreating them from memory.
   only to catch the unlabeled fuse node `Net-(D2-K)`) track 0.8, clearance 0.25, via 0.8/0.4.
 - Bottom layer = one unbroken GND plane. Top = components, all signals, power as wide
   traces, plus a stitched GND pour (thermal reliefs on THT pads; remove islands).
-- Power distribution plan: both rails run down the centre corridor to the bottom edge,
+- Power distribution plan (drawn for the 1×10 connectors; re-derive after the 2×5 swap,
+  which shortens each connector from 22.6 to 11.8 mm and moves its signal pads into a
+  single 0.75 mm-pitch row at the rear): both rails run down the centre corridor to the bottom edge,
   fork, and climb each connector column in the crossing-free lanes outboard of the pads
   (5 V in the pad/tab channel, 3V3 between tabs and board edge). The two bottom-edge
   feeders are the only bottom-layer traces. 3V3 to U1/U2 runs under the SOIC bodies
@@ -149,7 +158,7 @@ If any of these are missing, say so rather than recreating them from memory.
   pads and the board edge (0.3 edge + 0.8 track + 0.25 Power clearance; the 1.2 mm
   quoted earlier was under-derived). The owner moved the outline out 1.5 mm per side on
   2026-09-04 18:28–18:29 (and the bottom-right corner was squared up at 23:25); measured
-  with pcbnew afterwards: 2.10–2.15 mm on J5–J8, 2.15–2.20 mm on J1–J4. The lane fits and
+  with pcbnew afterwards: 2.10–2.15 mm on J5–J8, 2.15–2.20 mm on J1–J4 (figures for the old 1×10 footprint). The lane fits and
   no further outline change is needed. This bullet is
   the plan, not the state: the board saved on 2026-09-04 has 112 bottom-layer segments
   on 26 nets, including every signal group.
@@ -212,3 +221,10 @@ If any of these are missing, say so rather than recreating them from memory.
 11. The XIAO as placed does not overhang: its body ends 0.45 mm inside the top edge
     (courtyard on the edge line). Move U5 up ~1.5–2.5 mm for the agreed 1–2 mm USB
     overhang, or relax the rule; either way the two silk_edge_clearance warnings go.
+12. **Put the 2×5 connectors on the PCB.** The schematic (rev 1.4) now references the
+    503148-1090 footprint for J1–J8 but the board still carries the 1×10 502494 footprints
+    and routing. In KiCad: Tools → Update PCB from Schematic (swaps the footprints; every
+    track to their old pads dangles), re-place the eight receptacles with the nail pads
+    outboard and the 0.75 mm pad row inboard, re-route the columns and the power lanes,
+    refill zones, re-run DRC, regenerate `gerbers/`. Before fab, confirm the footprint's
+    nail-pad position and pad order against Molex SD-503148-1090 (see MEMORY.md item 12).

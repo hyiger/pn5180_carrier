@@ -7,7 +7,7 @@
 	(title_block
 		(title "PN5180 8-Bay NFC Reader Carrier")
 		(date "2026-09-04")
-		(rev "1.3")
+		(rev "1.4")
 		(company "hyiger")
 		(comment 1 "74HC138 chip-select decoder + 74HC151 BUSY mux, 5 ESP32 GPIOs for 8 readers")
 		(comment 2 "Generated with gen_kicad.py")
@@ -3677,7 +3677,7 @@
 		)
 		(uuid "b604a4a5-34dc-443d-8116-5b5eb16fbbc1")
 	)
-	(text "All SMD except the XIAO sockets. Connectors: Molex CLIK-Mate 2.00mm RA receptacles (502494-xx70), housings 502439-xx00, terminals 502438."
+	(text "All SMD except the XIAO sockets and U6's four THT pads. Bays: Molex CLIK-Mate 1.50mm dual-row RA receptacles 503148-1090 (2x5), housings 503149-1000, terminals 502579 (24-28 AWG). J10: CLIK-Mate 2.00mm 502494-0270, housing 502439-0200, terminals 502438."
 		(exclude_from_sim no)
 		(at 243.84 226.06 0)
 		(effects
@@ -8190,7 +8190,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "Bay 1 (CLIK-Mate 1x10)"
+		(property "Value" "Bay 1 (CLIK-Mate 2x5)"
 			(at 266.7 95.885 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8201,7 +8201,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Connector_Molex:Molex_CLIK-Mate_502494-1070_1x10-1MP_P2.00mm_Horizontal"
+		(property "Footprint" "carrier:Molex_CLIK-Mate_503148-1090_2x05-1MP_P1.50mm_Horizontal"
 			(at 269.24 81.28 0)
 			(hide yes)
 			(show_name no)
@@ -8223,7 +8223,7 @@
 				)
 			)
 		)
-		(property "Description" "CLIK-Mate 2.00mm RA SMT receptacle 1x10, positive lock"
+		(property "Description" "CLIK-Mate 1.50mm dual-row RA SMT receptacle 2x5, positive lock"
 			(at 269.24 81.28 0)
 			(hide yes)
 			(show_name no)
@@ -8245,7 +8245,7 @@
 				)
 			)
 		)
-		(property "MPN" "502494-1070"
+		(property "MPN" "503148-1090"
 			(at 269.24 81.28 0)
 			(hide yes)
 			(show_name no)
@@ -8256,7 +8256,7 @@
 				)
 			)
 		)
-		(property "Mouser" "538-502494-1070"
+		(property "Mouser" "538-503148-1090"
 			(at 269.24 81.28 0)
 			(hide yes)
 			(show_name no)
@@ -10984,7 +10984,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "Bay 5 (CLIK-Mate 1x10)"
+		(property "Value" "Bay 5 (CLIK-Mate 2x5)"
 			(at 353.06 95.885 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10995,7 +10995,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Connector_Molex:Molex_CLIK-Mate_502494-1070_1x10-1MP_P2.00mm_Horizontal"
+		(property "Footprint" "carrier:Molex_CLIK-Mate_503148-1090_2x05-1MP_P1.50mm_Horizontal"
 			(at 355.6 81.28 0)
 			(hide yes)
 			(show_name no)
@@ -11017,7 +11017,7 @@
 				)
 			)
 		)
-		(property "Description" "CLIK-Mate 2.00mm RA SMT receptacle 1x10, positive lock"
+		(property "Description" "CLIK-Mate 1.50mm dual-row RA SMT receptacle 2x5, positive lock"
 			(at 355.6 81.28 0)
 			(hide yes)
 			(show_name no)
@@ -11039,7 +11039,7 @@
 				)
 			)
 		)
-		(property "MPN" "502494-1070"
+		(property "MPN" "503148-1090"
 			(at 355.6 81.28 0)
 			(hide yes)
 			(show_name no)
@@ -11050,7 +11050,7 @@
 				)
 			)
 		)
-		(property "Mouser" "538-502494-1070"
+		(property "Mouser" "538-503148-1090"
 			(at 355.6 81.28 0)
 			(hide yes)
 			(show_name no)
@@ -12348,7 +12348,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "Bay 6 (CLIK-Mate 1x10)"
+		(property "Value" "Bay 6 (CLIK-Mate 2x5)"
 			(at 353.06 136.525 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12359,7 +12359,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Connector_Molex:Molex_CLIK-Mate_502494-1070_1x10-1MP_P2.00mm_Horizontal"
+		(property "Footprint" "carrier:Molex_CLIK-Mate_503148-1090_2x05-1MP_P1.50mm_Horizontal"
 			(at 355.6 121.92 0)
 			(hide yes)
 			(show_name no)
@@ -12381,7 +12381,7 @@
 				)
 			)
 		)
-		(property "Description" "CLIK-Mate 2.00mm RA SMT receptacle 1x10, positive lock"
+		(property "Description" "CLIK-Mate 1.50mm dual-row RA SMT receptacle 2x5, positive lock"
 			(at 355.6 121.92 0)
 			(hide yes)
 			(show_name no)
@@ -12403,7 +12403,7 @@
 				)
 			)
 		)
-		(property "MPN" "502494-1070"
+		(property "MPN" "503148-1090"
 			(at 355.6 121.92 0)
 			(hide yes)
 			(show_name no)
@@ -12414,7 +12414,7 @@
 				)
 			)
 		)
-		(property "Mouser" "538-502494-1070"
+		(property "Mouser" "538-503148-1090"
 			(at 355.6 121.92 0)
 			(hide yes)
 			(show_name no)
@@ -12848,7 +12848,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "Bay 7 (CLIK-Mate 1x10)"
+		(property "Value" "Bay 7 (CLIK-Mate 2x5)"
 			(at 353.06 177.165 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12859,7 +12859,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Connector_Molex:Molex_CLIK-Mate_502494-1070_1x10-1MP_P2.00mm_Horizontal"
+		(property "Footprint" "carrier:Molex_CLIK-Mate_503148-1090_2x05-1MP_P1.50mm_Horizontal"
 			(at 355.6 162.56 0)
 			(hide yes)
 			(show_name no)
@@ -12881,7 +12881,7 @@
 				)
 			)
 		)
-		(property "Description" "CLIK-Mate 2.00mm RA SMT receptacle 1x10, positive lock"
+		(property "Description" "CLIK-Mate 1.50mm dual-row RA SMT receptacle 2x5, positive lock"
 			(at 355.6 162.56 0)
 			(hide yes)
 			(show_name no)
@@ -12903,7 +12903,7 @@
 				)
 			)
 		)
-		(property "MPN" "502494-1070"
+		(property "MPN" "503148-1090"
 			(at 355.6 162.56 0)
 			(hide yes)
 			(show_name no)
@@ -12914,7 +12914,7 @@
 				)
 			)
 		)
-		(property "Mouser" "538-502494-1070"
+		(property "Mouser" "538-503148-1090"
 			(at 355.6 162.56 0)
 			(hide yes)
 			(show_name no)
@@ -13596,7 +13596,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "Bay 0 (CLIK-Mate 1x10)"
+		(property "Value" "Bay 0 (CLIK-Mate 2x5)"
 			(at 266.7 55.245 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13607,7 +13607,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Connector_Molex:Molex_CLIK-Mate_502494-1070_1x10-1MP_P2.00mm_Horizontal"
+		(property "Footprint" "carrier:Molex_CLIK-Mate_503148-1090_2x05-1MP_P1.50mm_Horizontal"
 			(at 269.24 40.64 0)
 			(hide yes)
 			(show_name no)
@@ -13629,7 +13629,7 @@
 				)
 			)
 		)
-		(property "Description" "CLIK-Mate 2.00mm RA SMT receptacle 1x10, positive lock"
+		(property "Description" "CLIK-Mate 1.50mm dual-row RA SMT receptacle 2x5, positive lock"
 			(at 269.24 40.64 0)
 			(hide yes)
 			(show_name no)
@@ -13651,7 +13651,7 @@
 				)
 			)
 		)
-		(property "MPN" "502494-1070"
+		(property "MPN" "503148-1090"
 			(at 269.24 40.64 0)
 			(hide yes)
 			(show_name no)
@@ -13662,7 +13662,7 @@
 				)
 			)
 		)
-		(property "Mouser" "538-502494-1070"
+		(property "Mouser" "538-503148-1090"
 			(at 269.24 40.64 0)
 			(hide yes)
 			(show_name no)
@@ -14343,7 +14343,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "Bay 3 (CLIK-Mate 1x10)"
+		(property "Value" "Bay 3 (CLIK-Mate 2x5)"
 			(at 266.7 177.165 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14354,7 +14354,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Connector_Molex:Molex_CLIK-Mate_502494-1070_1x10-1MP_P2.00mm_Horizontal"
+		(property "Footprint" "carrier:Molex_CLIK-Mate_503148-1090_2x05-1MP_P1.50mm_Horizontal"
 			(at 269.24 162.56 0)
 			(hide yes)
 			(show_name no)
@@ -14376,7 +14376,7 @@
 				)
 			)
 		)
-		(property "Description" "CLIK-Mate 2.00mm RA SMT receptacle 1x10, positive lock"
+		(property "Description" "CLIK-Mate 1.50mm dual-row RA SMT receptacle 2x5, positive lock"
 			(at 269.24 162.56 0)
 			(hide yes)
 			(show_name no)
@@ -14398,7 +14398,7 @@
 				)
 			)
 		)
-		(property "MPN" "502494-1070"
+		(property "MPN" "503148-1090"
 			(at 269.24 162.56 0)
 			(hide yes)
 			(show_name no)
@@ -14409,7 +14409,7 @@
 				)
 			)
 		)
-		(property "Mouser" "538-502494-1070"
+		(property "Mouser" "538-503148-1090"
 			(at 269.24 162.56 0)
 			(hide yes)
 			(show_name no)
@@ -15285,7 +15285,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "Bay 2 (CLIK-Mate 1x10)"
+		(property "Value" "Bay 2 (CLIK-Mate 2x5)"
 			(at 266.7 136.525 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15296,7 +15296,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Connector_Molex:Molex_CLIK-Mate_502494-1070_1x10-1MP_P2.00mm_Horizontal"
+		(property "Footprint" "carrier:Molex_CLIK-Mate_503148-1090_2x05-1MP_P1.50mm_Horizontal"
 			(at 269.24 121.92 0)
 			(hide yes)
 			(show_name no)
@@ -15318,7 +15318,7 @@
 				)
 			)
 		)
-		(property "Description" "CLIK-Mate 2.00mm RA SMT receptacle 1x10, positive lock"
+		(property "Description" "CLIK-Mate 1.50mm dual-row RA SMT receptacle 2x5, positive lock"
 			(at 269.24 121.92 0)
 			(hide yes)
 			(show_name no)
@@ -15340,7 +15340,7 @@
 				)
 			)
 		)
-		(property "MPN" "502494-1070"
+		(property "MPN" "503148-1090"
 			(at 269.24 121.92 0)
 			(hide yes)
 			(show_name no)
@@ -15351,7 +15351,7 @@
 				)
 			)
 		)
-		(property "Mouser" "538-502494-1070"
+		(property "Mouser" "538-503148-1090"
 			(at 269.24 121.92 0)
 			(hide yes)
 			(show_name no)
@@ -16415,7 +16415,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "Bay 4 (CLIK-Mate 1x10)"
+		(property "Value" "Bay 4 (CLIK-Mate 2x5)"
 			(at 353.06 55.245 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -16426,7 +16426,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Connector_Molex:Molex_CLIK-Mate_502494-1070_1x10-1MP_P2.00mm_Horizontal"
+		(property "Footprint" "carrier:Molex_CLIK-Mate_503148-1090_2x05-1MP_P1.50mm_Horizontal"
 			(at 355.6 40.64 0)
 			(hide yes)
 			(show_name no)
@@ -16448,7 +16448,7 @@
 				)
 			)
 		)
-		(property "Description" "CLIK-Mate 2.00mm RA SMT receptacle 1x10, positive lock"
+		(property "Description" "CLIK-Mate 1.50mm dual-row RA SMT receptacle 2x5, positive lock"
 			(at 355.6 40.64 0)
 			(hide yes)
 			(show_name no)
@@ -16470,7 +16470,7 @@
 				)
 			)
 		)
-		(property "MPN" "502494-1070"
+		(property "MPN" "503148-1090"
 			(at 355.6 40.64 0)
 			(hide yes)
 			(show_name no)
@@ -16481,7 +16481,7 @@
 				)
 			)
 		)
-		(property "Mouser" "538-502494-1070"
+		(property "Mouser" "538-503148-1090"
 			(at 355.6 40.64 0)
 			(hide yes)
 			(show_name no)

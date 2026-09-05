@@ -1,9 +1,9 @@
 # PN5180 8-Bay NFC Reader Carrier
 
 Carrier board that lets 4 or 8 PN5180 breakout modules plug in over ~30 cm cables with
-Molex CLIK-Mate 2.00 mm positive-lock connectors (the white latching style used on the
-Prusa LoveBoard) and share one SPI bus with a Seeed Studio XIAO ESP32C6 socketed at the
-top centre of the board. It runs from the printer's 24 V supply through an MP1584EN buck
+Molex CLIK-Mate 1.50 mm dual-row (2×5) positive-lock connectors (CLIK-Mate is the white
+latching family used on the Prusa LoveBoard) and share one SPI bus with a Seeed Studio
+XIAO ESP32C6 socketed at the top centre of the board. It runs from the printer's 24 V supply through an MP1584EN buck
 module soldered flat onto the carrier. Every part is SMD except the two 1×7 female
 headers the XIAO sits in and the buck module's four through-hole pads. A 74HC138 decodes
 3 address lines into the 8 chip selects; a 74HC151 muxes the 8 BUSY lines back to a
@@ -13,7 +13,7 @@ protocol needs.
 **GPIO cost: 9 of the XIAO's 11 pins** — SCK, MOSI, MISO, A0, A1, A2, /EN, BUSY, /RST.
 D6 and D7 are spare.
 
-Author: hyiger · Rev 1.3 · KiCad 10 files (saved with 10.0.6; KiCad 9 and older cannot open them)
+Author: hyiger · Rev 1.4 · KiCad 10 files (saved with 10.0.6; KiCad 9 and older cannot open them)
 
 ## Files
 
@@ -23,7 +23,7 @@ Author: hyiger · Rev 1.3 · KiCad 10 files (saved with 10.0.6; KiCad 9 and olde
 | `pn5180_carrier.kicad_sch` | Schematic (single A3 sheet, all symbols embedded) |
 | `pn5180_carrier.kicad_pcb` | 2-layer PCB, 62.5 × 106.5 mm. Layout in progress: a few nets still unrouted, mounting holes not yet placed |
 | `carrier.kicad_sym` + `sym-lib-table` | Project-local symbol library (same symbols, for editing) |
-| `carrier.pretty/` + `fp-lib-table` | Project-local footprints: the XIAO 2×7 socket (geometry from Seeed's OPL library) and the MP1584EN module pads |
+| `carrier.pretty/` + `fp-lib-table` | Project-local footprints: the XIAO 2×7 socket (geometry from Seeed's OPL library), the MP1584EN module pads, and the CLIK-Mate 503148-1090 2×5 receptacle (from Molex's catalog drawing — KiCad ships no dual-row CLIK-Mate footprint) |
 | `pn5180_carrier_schematic.pdf` / `.png` | Rendered schematic, no KiCad needed |
 | `pn5180_carrier_bom.csv` | Full BOM: refs, qty, MPN, Mouser #, footprint, DNP flag |
 | `pn5180_carrier_mouser_order.csv` | One-board order list for Mouser's BOM tool (populated parts, the two XIAO sockets, and cable-side parts with spare terminals) |
@@ -41,13 +41,18 @@ depends on the footprint. Command-line checks use KiCad's `kicad-cli`: `sch erc`
 
 ## Connector pinouts
 
-### J1–J8: bay connectors (Molex 502494-1070, CLIK-Mate 2.00 mm 1×10 right-angle SMT)
+### J1–J8: bay connectors (Molex 503148-1090, CLIK-Mate 1.50 mm 2×5 dual-row right-angle SMT)
 
-Single row, so cavity *n* of the 502439-1000 housing is signal *n*. Signals 1–9 are in the
-same order as the 9-pin header on the common red PN5180 module. Pin 10 is a second GND:
-run it as a separate wire twisted with SCK and crimp both returns into the module's GND
-at the far end, which tightens the SCK return loop over the 30 cm. Verify the module's
-header order before building cables.
+Cavity *n* of the 503149-1000 housing is signal *n*. Molex numbers the two rows as stacked
+pairs — odd circuits (1, 3, 5, 7, 9) in one row, even circuits (2, 4, 6, 8, 10) in the
+other — so 5V sits over 3V3, /RST over NSS, MOSI over MISO, SCK over BUSY, and the two GNDs
+share the last column. Signals 1–9 keep the order of the 9-pin header on the common red
+PN5180 module, so the module end of each cable is a straight 1-to-9 run plus the second
+GND. On the PCB the receptacle's ten leads come out in one 0.75 mm-pitch line, numbered
+1 to 10 from the pin-1 end (chamfer and triangle on the footprint). Pin 10 is a second
+GND: run it as a separate wire twisted with SCK and crimp both returns into the module's
+GND at the far end, which tightens the SCK return loop over the 30 cm. Verify the module's
+header order, and the cavity numbering on Molex's 503149 drawing, before building cables.
 
 | Pin | Signal | Notes |
 |---|---|---|
@@ -143,16 +148,21 @@ Three things about this module on a 24 V rail:
 
 ### Cables (~30 cm)
 
-One connector family for everything. Bay cable: 502439-1000 housing at the carrier with
-10 × 502438 terminals on 22–26 AWG stranded wire, 2.54 mm DuPont-style female on the module
-end (or solder to the module header). Power: 502439-0200 with 22 AWG. The XIAO is socketed
-on the carrier, so bay and power cables are the only cables.
+Bay cable: 503149-1000 dual-row housing at the carrier with 10 × 502579 terminals on
+24–28 AWG stranded wire — the cavity takes insulation up to 1.28 mm OD, so use thin-wall
+UL1061/UL1571-type wire (common UL1007 24 AWG is too fat); 24 AWG for 5V/GND is plenty at
+≤ 0.25 A per bay — and a 2.54 mm DuPont-style female on the module end (or solder to the
+module header). Power: the 24 V cable stays on the 2.00 mm family, 502439-0200 housing
+with 502438 terminals on 22 AWG. The XIAO is socketed on the carrier, so bay and power
+cables are the only cables.
 
-The housing latches into the receptacle (the CLIK) and releases with a squeeze — no tools.
-Molex's own hand crimper (63819-2800) is expensive; the 502438 is a standard open-barrel
-terminal and a generic 2.0 mm-class ratchet crimper (PA-09 / SN-2549 type) does the job.
-Molex also sells pre-crimped CLIK-Mate leads (79758-10xx series) if you'd rather skip
-crimping entirely — check length and single/double-ended on Mouser.
+The housing latches inside the receptacle (the CLIK; one inner lock on the 10-circuit
+housing) and releases with a squeeze — no tools. Molex's hand crimpers are expensive
+(200218-7400 for the 1.50 mm 502579, 63819-2800 for the 2.00 mm 502438); both are small
+open-barrel terminals and a generic ratchet crimper for 1.5–2.0 mm-class terminals
+(PA-09 / SN-2549 type) does the job. Molex also sells pre-crimped CLIK-Mate 1.50 leads
+(79758-1011: 300 mm, 24 AWG UL1061, terminal on both ends, packs of 10 at RS) — cut one
+end off and solder it to the module header if you'd rather skip crimping.
 
 Eight 30 cm unterminated stubs hanging off one SPI bus is a real transmission-line load,
 so the design takes three precautions:
@@ -254,10 +264,12 @@ state and the ERC/DRC baseline are tracked in `MEMORY.md`.
   plain 1×7 female headers on 15.24 mm centres; the footprint sets that spacing. The XIAO
   also has an external-antenna u.FL if the rack's metal gets in the way.
 - Bay connectors down both long edges (J5–J8 left, J1–J4 right), in bay order, so cables
-  don't cross. The 502494
-  receptacles are SMT with two large solder-tab pads ("MP" in the footprint) — those tabs,
-  not the signal pins, take the cable-pull load, so give them full paste and don't thin
-  the copper under them. Right-angle parts: the cable leaves flat along the board plane.
+  don't cross. The 503148 receptacles are SMT: ten 0.55 mm signal pads at 0.75 mm pitch
+  in one line at the rear (reflow, or drag-solder with plenty of flux) and two solder-nail
+  pads ("MP" in the footprint) at the front corners — the nails, not the signal pins, take
+  the cable-pull load, so give them full paste and don't thin the copper under them.
+  Right-angle parts: the cable leaves flat along the board plane. The 2×5 body is 11.8 mm
+  long against the old 1×10's 22.6 mm, so the connector columns can tighten up.
 - R6/R7 within a few mm of U5 pins 9/11 (D8 SCK / D10 MOSI), before the traces fan out.
 - U1/U2 near U5 (short A0–A2, /EN, BUSY traces); the eight NSS/BUSY lines then run out
   to the connector edge.
@@ -270,7 +282,7 @@ state and the ERC/DRC baseline are tracked in `MEMORY.md`.
 
 ## BOM (SMD except the XIAO sockets and U6's pads)
 
-Rev 1.3. Every symbol in the schematic carries `Manufacturer`, `MPN` and `Mouser` fields,
+Rev 1.4. Every symbol in the schematic carries `Manufacturer`, `MPN` and `Mouser` fields,
 so KiCad's own BOM export reproduces this table except the two Würth sockets, which are
 added by hand (they are in the Mouser order list). `pn5180_carrier_mouser_order.csv` can
 be uploaded directly to Mouser's BOM tool.
@@ -280,7 +292,7 @@ be uploaded directly to Mouser's BOM tool.
 | U1 | 1 | TI SN74HC138DR | 595-SN74HC138DR | Package_SO:SOIC-16_3.9x9.9mm_P1.27mm |
 | U2 | 1 | TI SN74HC151DR | 595-SN74HC151DR | Package_SO:SOIC-16_3.9x9.9mm_P1.27mm |
 | U4 | 1 | TI TLV1117LV33DCYR, 3.3 V 1 A ceramic-stable LDO | 595-TLV1117LV33DCYR | Package_TO_SOT_SMD:SOT-223-3_TabPin2 |
-| J1–J8 | 8 | Molex 502494-1070, CLIK-Mate 2.00 mm RA SMT receptacle 1×10 | 538-502494-1070 | Connector_Molex:Molex_CLIK-Mate_502494-1070_1x10-1MP_P2.00mm_Horizontal |
+| J1–J8 | 8 | Molex 503148-1090, CLIK-Mate 1.50 mm dual-row RA SMT receptacle 2×5 (1 A/contact) | 538-503148-1090 | carrier:Molex_CLIK-Mate_503148-1090_2x05-1MP_P1.50mm_Horizontal |
 | U5 | 1 | Seeed Studio XIAO ESP32C6 (SKU 113991182) — user-supplied | 713-113991182 (verify) | carrier:Seeed_XIAO_2x7_Socket |
 | (U5 sockets) | 2 | Würth 61300711821, WR-PHD 1×7 female header 2.54 mm THT | 710-61300711821 | (part of the U5 footprint) |
 | D1 | 1 | Nexperia PMEG2010AEH, Schottky 20 V 1 A, SOD-123 | 771-PMEG2010AEH | Diode_SMD:D_SOD-123 |
@@ -303,13 +315,18 @@ Cable side:
 
 | Part | Mouser # | Qty / board | Use |
 |---|---|---|---|
-| Molex 502439-1000 CLIK-Mate positive-lock housing 1×10 | 538-502439-1000 | 8 | Bay cables |
-| Molex 502439-0200 CLIK-Mate positive-lock housing 1×2 | 538-502439-0200 | 1 | 24 V cable |
-| Molex 502438-0100 CLIK-Mate crimp terminal, loose, 22–26 AWG | 538-502438-0100 | 82 (+spares) | All cables |
+| Molex 503149-1000 CLIK-Mate 1.50 dual-row positive-lock plug housing 2×5 | 538-503149-1000 | 8 | Bay cables |
+| Molex 502579-0000 CLIK-Mate 1.50 crimp terminal, 24–28 AWG, cut strip of 100 | 538-502579-0000-CT | 100 (80 needed) | Bay cables |
+| Molex 502439-0200 CLIK-Mate 2.00 positive-lock housing 1×2 | 538-502439-0200 | 1 | 24 V cable |
+| Molex 502438-0100 CLIK-Mate 2.00 crimp terminal, loose, 22–26 AWG | 538-502438-0100 | 2 (+spares) | 24 V cable |
 
-Vertical (top-entry) versions of the same receptacles are the 502443-xx70 series on
-identical pads; KiCad's library has them in 2 and 12 circuits but not 10, so the design
-uses right-angle throughout. Rated 3 A per contact, 30 mating cycles.
+Stock check on Mouser, 2026-09-04/05: 503148-1090 1,696 in stock, minimum 1, $1.98 at 10;
+503149-1000 7,865, minimum 1, $0.44 at 10; 502579-0000 cut strip 33,700, minimum 100,
+$5.70 per 100. DigiKey, Arrow and Newark also list the receptacle and housing at minimum 1.
+The finer 503429-0000 terminal (26–30 AWG) is reel-only (20,000) — don't spec it. The
+vertical (top-entry) dual-row receptacle is 503154-1090 (2 A/contact, a two-row land
+pattern); the right-angle part used here is rated 1.0 A per contact, 30 mating cycles — a
+bay draws ≤ 0.25 A.
 
 Mouser numbers follow Mouser's manufacturer-prefix + MPN scheme (595 = TI, 538 = Molex,
 603 = Yageo, 81 = Murata, 710 = Würth, 771 = Nexperia, 713 = Seeed, 576 = Littelfuse). 963-MSASJ32MAB5227MP was read from the product page; the

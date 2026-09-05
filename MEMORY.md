@@ -93,6 +93,34 @@ Updated 2026-09-04 for the KiCad 10 migration, with measured layout and check st
     violations, 10 unconnected, 0 parity). The stored zone fills still stop at the old
     slanted edge until the zones are refilled in the GUI, and `gerbers/` predates the fix.
 
+12. **Bay connectors → CLIK-Mate 1.50 dual row, 2×5** (owner's decision, 2026-09-05). The
+    owner asked for a "quick click" Molex 2×5 instead of the 1×10; CLIK-Mate dual row
+    exists only at 1.50 mm pitch, so J1–J8 became **503148-1090** (RA SMT, 1.0 A/contact,
+    30 cycles, inner positive lock), housing **503149-1000**, terminals **502579-0000**
+    (24–28 AWG, insulation OD ≤ 1.28 mm — thin-wall UL1061/UL1571 wire only; the 22 AWG
+    option is gone). Mouser checks 2026-09-04/05 (in-app browser; WebFetch is blocked):
+    503148-1090 1,696 in stock, min 1, $1.98@10; 503154-1090 (vertical, 2 A) 744, min 1,
+    $1.63@10; 503149-1000 7,865, min 1, $0.44@10; 502579-0000 cut strip
+    (538-502579-0000-CT) 33,700, min 100, $5.70/100; 503429-0000 (26–30 AWG) reel-only
+    20,000 → rejected. OEMsTrade aggregate also showed DigiKey 11,852 / Arrow 6,046 /
+    Newark 63 for 503148-1090 and Newark 6,475 for the housing. Alternatives checked and
+    set aside: Micro-Fit 3.0 43045-1010 (2×5 RA SMT, 3.0 mm, Mouser 2,318 min 1 — bulky,
+    20–24 AWG) and Nano-Fit 105314-1210 (2×5 RA THT, 2.5 mm, Mouser 2,803 min 1 —
+    through-hole; housing is 105308-1210, terminals 105300-1200). J10 stays on the 2.00 mm
+    family (502494-0270 / 502439-0200 / 502438). KiCad ships no dual-row CLIK-Mate
+    footprint: `carrier.pretty/Molex_CLIK-Mate_503148-1090_2x05-1MP_P1.50mm_Horizontal`
+    was generated from Molex's catalog drawing (Kyohritsu-hosted Molex Japan catalog,
+    p.45): 10 pads 0.55 × 2.70 at 0.75 mm in ONE line at the rear (the two contact rows
+    interleave into one lead row), nail pads 1.20 × 4.65 at X ±5.30 toward the front,
+    body 11.8 × 8.75, height 9.15. Two things are read, not dimensioned, on that drawing
+    and must be confirmed on Molex SD-503148-1090 (molex.com is unreachable from the tool
+    network; it works in a normal browser): the nail pads' fore-aft position (taken as
+    3.95 mm behind the rear pad edge, ±0.2 mm) and the sequential 1…10 order along the
+    pad line (the drawing labels only "circuit 1" right / "circuit N" left, mating face
+    toward the viewer's bottom). Schematic fields, BOM CSV, Mouser CSV, README updated;
+    title-block rev bumped to 1.4; netlist (38/189/0) and ERC (82) unchanged. The PCB
+    still has the 1×10 footprints and routing — open item.
+
 ## Verified facts (don't re-derive)
 
 Rows without a date come from the 2026-09-03 design session.
@@ -100,7 +128,8 @@ Rows without a date come from the 2026-09-03 design session.
 | Item | Value | Verified how |
 |---|---|---|
 | CLIK-Mate 2.00 RA 1×10 | Molex 502494-1070 | KiCad footprint exists; Molex listing |
-| CLIK-Mate dual row | only in 1.50 mm: RA 503148-xx70, vertical 503154-xx90, housing 503149-xx00, terminal 502578; 2 A/contact; no KiCad footprint | Molex datasheet + series charts |
+| CLIK-Mate dual row | only in 1.50 mm; RA SMT 503148-xx90 (10–24 ckt, 1.0 A), vertical SMT 503154-xx90 (8–34 ckt, 2.0 A), housing 503149-xx00, terminals 502579-0000 (24–28 AWG) / 503429-0000 (26–30 AWG); 30 cycles; no stock KiCad footprint. (Earlier note here had "-xx70" and "terminal 502578" — wrong.) | Molex brochure 987650-3302, Molex Japan catalog drawings, Mouser pages 2026-09-05 |
+| 503148-1090 land pattern | 10 × 0.55 × 2.70 pads at 0.75 mm in one line at the rear; nails 1.20 × 4.65 at X ±5.30 toward the front (fore-aft position scaled); body 11.8 × 8.75, h 9.15; circuit 1 at the right in the top view with the mating face down | Molex Japan catalog p.45 (Kyohritsu mirror), 2026-09-05 — confirm on SD-503148-1090 |
 | XIAO ESP32C6 mechanicals | 2×7 THT, 15.24 mm rows, USB end = pins 1/14, 21 × 17.8 mm | Seeed OPL KiCad lib |
 | XIAO 5V pin | direct USB VBUS, needs series diode for external feed | Seeed wiki |
 | XIAO SPI | D8 SCK / D9 MISO / D10 MOSI; `SPI.begin()` default | Seeed wiki |
@@ -175,8 +204,11 @@ D9=20 D10=18 (write code with the D names).
   top pour pockets; R1/R5 sit top-left with no clean 3V3 path (move beside U1 pins 4–5,
   or accept a jog under A0–A2).
 - `gerbers/` (21:46) and `gerbers.zip` (21:48, 2026-09-04) are stale: made before routing,
-  holes and the 23:25 outline fix — regenerate before ordering. The GND zone fills stored
-  in the PCB also still stop at the old slanted edge; refill in the GUI.
+  holes and the 23:25 outline fix — regenerate before ordering. The owner refilled the GND
+  zones in the GUI at 23:32 (PCB save, committed as a473531).
+- **2026-09-05: J1–J8 changed to the 2×5 CLIK-Mate 503148-1090 in the schematic only.**
+  The PCB still carries the eight 1×10 502494 footprints and their routing; the connector
+  columns, power lanes and tab-pad clearances above all describe the old parts.
 
 ## Check status (kicad-cli 10.0.6, 2026-09-04, files as saved 22:06)
 
@@ -243,6 +275,13 @@ D9=20 D10=18 (write code with the D names).
   per-library rows.
 - `git status`/`diff`/`add`/`gc` inside `.history/` rewrite its `.git/index`; only
   `git log`, `rev-list`, `show` are read-only there.
+- Distributor access from the tool network (2026-09-05): mouser.com and digikey.com block
+  WebFetch; Mouser product pages load in the in-app browser (stock, "Minimum:", price
+  breaks readable with get_page_text) for roughly a dozen loads, then "Access denied";
+  DigiKey and ManualsLib sit behind Cloudflare checks; molex.com times out for WebFetch
+  and serves its PDFs as downloads in the browser. Working sources: docs.rs-online.com
+  PDFs, *.rsdelivers.com, oemstrade.com (Octopart-style aggregator), and the Kyohritsu
+  mirror of Molex Japan's catalog (drawings for the 1.50 mm CLIK-Mate family).
 
 ## Open questions for the owner
 
@@ -271,6 +310,13 @@ D9=20 D10=18 (write code with the D names).
 - Delete the stray repo file `rites next to this script#`?
 - Where do the M3 holes go? (Suggested: inboard of each connector column at the
   J5/J6 and J7/J8 gap levels, clear of tab pads.)
-- Keep the 30 cm harness spec (22–26 AWG, second GND twisted with SCK)?
+- Harness spec is now 24–28 AWG thin-wall (502579 cavity, OD ≤ 1.28 mm), second GND
+  twisted with SCK — still 30 cm? Buy Molex pre-crimped 79758-1011 leads (24 AWG, 300 mm,
+  packs of 10) instead of crimping?
+- 2×5 pin pairing: keep the module-header order (5V/3V3, /RST/NSS, MOSI/MISO, SCK/BUSY,
+  GND/GND stacked) or re-pair so SCK sits over a GND? (Changes the netlist and README.)
+- Move J10 to the 1.50 family too (502585-0270 receptacle, 502578-0200 housing, same
+  502579 terminals — one terminal type, 24 V input ≤ 0.4 A)? Vertical 503154-1090 (2 A,
+  top entry) instead of the right-angle 503148-1090?
 - Retire `gen_kicad.py`, or port the JP1/JP2 removal and any other hand edits into it?
 - 4-bay build variant: J5–J8 and RN2 unpopulated, `BAYS = 4` in firmware — document?
