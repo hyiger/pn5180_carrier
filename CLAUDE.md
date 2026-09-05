@@ -206,8 +206,9 @@ If any of these are missing, say so rather than recreating them from memory.
 10. ~~README, BOM CSV, renders and schematic notes still mention JP1/JP2 and KiCad 7.~~
     Done 2026-09-04: README rewritten for KiCad 10 and the PCB; JP1/JP2 removed from the
     README, `pn5180_carrier_bom.csv`, the schematic's two DESIGN NOTES texts and the
-    renders. Still stale: schematic title-block comment 1 says "BUSY/IRQ mux" (IRQ went in
-    rev 1.3) — fix in the GUI.
+    renders; title-block comment 1 changed from "BUSY/IRQ mux" to "BUSY mux". These
+    schematic text edits were made on disk while KiCad was open — the schematic editor
+    must be reverted (File > Revert) before its next save or they are lost.
 11. The XIAO as placed does not overhang: its body ends 0.45 mm inside the top edge
     (courtyard on the edge line). Move U5 up ~1.5–2.5 mm for the agreed 1–2 mm USB
     overhang, or relax the rule; either way the two silk_edge_clearance warnings go.
