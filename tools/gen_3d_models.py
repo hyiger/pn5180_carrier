@@ -47,6 +47,12 @@ class Model:
             f.append((k, j, n + j, n + k))
         self.shapes.append((color, p, f))
 
+    def arc_prism(self, cx, cy, r, a0, a1, z0, z1, color, n=10):
+        """Pie-slice prism from angle a0 to a1 (degrees, footprint frame) — e.g. a half-hole."""
+        poly = [(cx, cy)] + [(cx + r * math.cos(math.radians(a0 + (a1 - a0) * k / n)),
+                              cy + r * math.sin(math.radians(a0 + (a1 - a0) * k / n))) for k in range(n + 1)]
+        self.prism(poly, z0, z1, color)
+
     @staticmethod
     def rounded_rect(x0, x1, y0, y1, r, seg=6):
         pts = []
@@ -107,8 +113,9 @@ def clikmate_2x5_ra():
 def clikmate_1x2_ra():
     """Molex 502494-0270: KiCad stock outline 8.1 x 7.05 (Y -1.85..5.2), height ~6.5 (est.)."""
     m = Model("Molex CLIK-Mate 502494-0270 1x2 right-angle SMT receptacle (height estimated)")
-    m.box(-4.05, 4.05, -1.85, 5.2, 0.05, 6.5, NATURAL)
-    m.box(-2.4, 2.4, 4.5, 5.21, 1.2, 5.2, DARK)
+    m.box(-4.0, 4.0, -1.8, 2.55, 0.05, 6.5, NATURAL)                     # rear body (stock F.Fab centreline)
+    m.box(-3.67, 3.67, 2.55, 5.15, 0.05, 6.5, NATURAL)                   # narrowed mating nose
+    m.box(-2.4, 2.4, 4.5, 5.16, 1.2, 5.2, DARK)
     m.box(-1.2, 1.2, 0.5, 2.5, 6.5, 6.52, DARK)
     for x in (-1.0, 1.0):
         m.box(x - 0.45, x + 0.45, -3.9, -1.6, 0.0, 0.2, TIN)
@@ -117,21 +124,24 @@ def clikmate_1x2_ra():
     return m
 
 
-def xiao_on_sockets():
-    """Seeed XIAO ESP32C6 (21 x 17.8 x 1.2) on two Wuerth 61300711821 1x7 sockets (8.5 mm tall),
-    rows at X = +/-7.62; USB end at +X (overhangs to X = 12.05), antenna end at -X."""
-    m = Model("Seeed XIAO ESP32C6 on two 1x7 2.54 mm sockets")
+def xiao(on_sockets):
+    """Seeed XIAO ESP32C6 (21 x 17.8 x 1.2), USB end at +X (USB-C overhangs to X = 12.05),
+    antenna end at -X, pin 1 (D0) castellation at (+7.62, -8.9). Either soldered flat by its
+    castellations (on_sockets=False) or on two Wuerth 61300711821 1x7 sockets, 8.5 mm tall,
+    rows at Y = +/-7.62 (on_sockets=True)."""
+    m = Model("Seeed XIAO ESP32C6" + (" on two 1x7 2.54 mm sockets" if on_sockets else ", soldered flat"))
     GOLD = (0.85, 0.70, 0.30)
     WHITE = (0.93, 0.93, 0.93)
     ANT = (0.62, 0.62, 0.45)
     LED = (0.95, 0.90, 0.60)
-    zb, zt = 8.5, 9.7                                                     # XIAO PCB bottom/top
-    # sockets: Wuerth 61300711821, 17.78 x 2.54, 8.5 mm insulator, one per pad row (Y = -7.62 / +7.62)
-    for sy in (-7.62, 7.62):
-        m.box(-8.89, 8.89, sy - 1.27, sy + 1.27, 0.0, zb, BLACK)
-        for k in range(7):                                                # socket holes
-            x = -7.62 + 2.54 * k
-            m.box(x - 0.45, x + 0.45, sy - 0.45, sy + 0.45, zb, zb + 0.01, (0.03, 0.03, 0.03))
+    zb = 8.5 if on_sockets else 0.05                                      # XIAO PCB bottom
+    zt = zb + 1.2                                                         # XIAO PCB top
+    if on_sockets:
+        for sy in (-7.62, 7.62):
+            m.box(-8.89, 8.89, sy - 1.27, sy + 1.27, 0.0, zb, BLACK)
+            for k in range(7):                                            # socket holes
+                x = -7.62 + 2.54 * k
+                m.box(x - 0.45, x + 0.45, sy - 0.45, sy + 0.45, zb, zb + 0.01, (0.03, 0.03, 0.03))
     # board: 21 x 17.8, rounded corners, black; USB end at +X, antenna end at -X
     m.prism(m.rounded_rect(-10.5, 10.5, -8.9, 8.9, 2.5), zb, zt, (0.07, 0.07, 0.08))
     # 14 castellated pads: 7 per long edge at 2.54 mm pitch; pin 1 (D0) at +X on the -Y edge
@@ -139,7 +149,8 @@ def xiao_on_sockets():
         x = 7.62 - 2.54 * k
         for sy in (-1, 1):
             m.box(x - 0.9, x + 0.9, sy * 7.0, sy * 8.9, zt, zt + 0.02, GOLD)          # pad on top
-            m.cylinder(x, sy * 8.9, 0.55, zb - 0.01, zt + 0.02, GOLD, n=16)          # castellation
+            a0 = 0 if sy < 0 else 180                                                 # half-hole, flush with the edge
+            m.arc_prism(x, sy * 8.9, 0.55, a0, a0 + 180, zb - 0.01, zt + 0.02, GOLD)
     # USB-C receptacle 8.94 x 7.35 x 3.26, overhanging the +X edge to X = 12.05
     m.box(4.7, 12.05, -4.47, 4.47, zt, zt + 3.26, STEEL)
     m.box(11.9, 12.06, -3.9, 3.9, zt + 0.6, zt + 2.7, (0.05, 0.05, 0.05))             # port opening
@@ -148,9 +159,9 @@ def xiao_on_sockets():
     m.box(-4.9, 3.4, -5.7, 5.7, zt + 2.2, zt + 2.21, (0.85, 0.85, 0.85))              # label area
     # reset (R, -Y side) and boot (B, +Y side) buttons beside the USB-C, plus LEDs behind them
     for sy in (-1, 1):
-        m.box(8.1, 9.7, sy * 6.5 - 0.8, sy * 6.5 + 0.8, zt, zt + 0.55, STEEL)
-        m.cylinder(8.9, sy * 6.5, 0.45, zt + 0.55, zt + 0.75, (0.55, 0.55, 0.58), n=16)
-        m.box(6.7, 7.7, sy * 6.3 - 0.35, sy * 6.3 + 0.35, zt, zt + 0.5, LED)
+        m.box(8.1, 9.7, sy * 6.0 - 0.8, sy * 6.0 + 0.8, zt, zt + 0.55, STEEL)          # clear of the corner pads
+        m.cylinder(8.9, sy * 6.0, 0.45, zt + 0.55, zt + 0.75, (0.55, 0.55, 0.58), n=16)
+        m.box(6.7, 7.7, sy * 6.0 - 0.35, sy * 6.0 + 0.35, zt, zt + 0.5, LED)
     # u.FL antenna socket at the -X end, -Y corner
     m.box(-10.3, -7.7, -6.3, -3.7, zt, zt + 0.6, STEEL)
     m.cylinder(-9.0, -5.0, 1.0, zt + 0.6, zt + 1.25, (0.9, 0.9, 0.88), n=20)
@@ -164,20 +175,30 @@ def xiao_on_sockets():
 def mp1584_module():
     """MP1584EN mini buck module 22.1 x 16.8, soldered flat; pads at (+/-9.271, +/-4.064).
     IN side at -X, OUT side at +X (footprint descr)."""
-    m = Model("MP1584EN mini buck module 22x17 (D-SUN style)")
-    m.box(-11.05, 11.05, -8.4, 8.4, 0.0, 1.2, PCB_BLUE)                   # module PCB
-    for px in (-9.271, 9.271):
+    m = Model("MP1584EN mini buck module 22x17, fixed output (no trimmer), black PCB")
+    PCB_BLK = (0.06, 0.06, 0.07)
+    GOLD = (0.85, 0.70, 0.30)
+    IND, IND_TOP = (0.22, 0.22, 0.24), (0.32, 0.32, 0.34)
+    m.box(-11.05, 11.05, -8.4, 8.4, 0.0, 1.2, PCB_BLK)                    # module PCB
+    for px in (-9.271, 9.271):                                            # plated corner holes
         for py in (-4.064, 4.064):
-            m.cylinder(px, py, 1.5, 1.2, 1.25, TIN)                       # solder pads
-    m.box(-8.5, -2.5, -3.0, 3.0, 1.2, 4.2, BLACK)                         # shielded inductor
-    m.box(-0.5, 4.5, -2.0, 2.0, 1.2, 2.7, BLACK)                          # MP1584EN SOIC-8
-    m.box(-0.5, 4.5, 2.0, 2.9, 1.2, 1.45, TIN)
-    m.box(-0.5, 4.5, -2.9, -2.0, 1.2, 1.45, TIN)
-    m.box(6.3, 9.3, 1.9, 5.7, 1.2, 5.9, POT_BLUE)                         # trimmer pot
-    m.cylinder(7.8, 3.8, 0.9, 5.9, 6.0, TIN)
-    m.box(-9.8, -6.6, 4.8, 6.4, 1.2, 2.7, CAP)                            # input cap
-    m.box(5.0, 8.2, -6.4, -4.8, 1.2, 2.7, CAP)                            # output cap
-    m.box(0.0, 2.7, 4.8, 6.4, 1.2, 2.2, BLACK)                            # diode
+            m.cylinder(px, py, 1.5, 1.2, 1.24, GOLD)
+            m.cylinder(px, py, 0.6, 1.24, 1.26, (0.03, 0.03, 0.03))
+    m.box(-6.8, -0.5, -2.6, 3.7, 1.2, 4.1, IND)                           # shielded inductor 6.3 x 6.3 x 2.9
+    m.box(-6.4, -0.9, -2.2, 3.3, 4.1, 4.13, IND_TOP)
+    m.box(1.4, 6.3, -1.0, 2.9, 1.2, 2.75, BLACK)                          # MP1584EN SOIC-8, pins along X
+    for k in range(4):
+        x = 2.05 + 1.27 * k
+        m.box(x - 0.22, x + 0.22, 2.9, 3.85, 1.2, 1.45, TIN)
+        m.box(x - 0.22, x + 0.22, -1.95, -1.0, 1.2, 1.45, TIN)
+    for cx, cy in ((7.6, 6.3), (9.8, 6.3), (-8.2, -6.4), (-5.6, -6.4), (8.6, -6.3)):   # 0805 ceramics
+        m.box(cx - 1.0, cx + 1.0, cy - 0.65, cy + 0.65, 1.2, 2.1, CAP)
+        m.box(cx - 1.0, cx - 0.6, cy - 0.65, cy + 0.65, 1.2, 2.11, TIN)
+        m.box(cx + 0.6, cx + 1.0, cy - 0.65, cy + 0.65, 1.2, 2.11, TIN)
+    m.box(-1.6, 2.1, -7.0, -5.4, 1.2, 2.3, BLACK)                         # SOD-123 diode
+    m.box(-2.2, -1.6, -6.6, -5.8, 1.2, 1.5, TIN)
+    m.box(2.1, 2.7, -6.6, -5.8, 1.2, 1.5, TIN)
+    m.box(-9.8, -8.6, 1.4, 3.4, 1.2, 1.9, CAP)                            # 0603 near the IN corner
     return m
 
 
@@ -194,7 +215,8 @@ def nano2_fuse():
 MODELS = {
     "Molex_CLIK-Mate_503148-1090_2x05_RA.wrl": clikmate_2x5_ra,
     "Molex_CLIK-Mate_502494-0270_1x02_RA.wrl": clikmate_1x2_ra,
-    "Seeed_XIAO_ESP32C6_on_2x7_sockets.wrl": xiao_on_sockets,
+    "Seeed_XIAO_ESP32C6.wrl": lambda: xiao(False),
+    "Seeed_XIAO_ESP32C6_on_2x7_sockets.wrl": lambda: xiao(True),
     "MP1584EN_Module_22x17.wrl": mp1584_module,
     "Littelfuse_NANO2_451_453.wrl": nano2_fuse,
 }

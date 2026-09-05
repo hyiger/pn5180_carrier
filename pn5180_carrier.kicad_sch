@@ -13745,7 +13745,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "carrier:Seeed_XIAO_2x7_Socket"
+		(property "Footprint" "carrier:Seeed_XIAO_ESP32C6_SMD"
 			(at 50.8 101.6 0)
 			(hide yes)
 			(show_name no)

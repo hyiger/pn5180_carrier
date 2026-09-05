@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Render 3D previews of the carrier with KiCad's own renderer (kicad-cli pcb render).
 
-Works on a temporary copy of the project, so the real PCB is never touched. Until the PCB
-has been updated from the schematic (CLAUDE.md open item 12) the copy also swaps J1-J8 to
-the 2x5 CLIK-Mate footprint and attaches the carrier.3dshapes models to U5, U6 and J10,
-so the preview shows the intended finished board rather than the board as saved.
+Works on a temporary copy of the project, so the real PCB is never touched. If the board
+copy were ever reverted to the 1x10 bay footprints or lost its model references, the copy
+would swap J1-J8 to the 2x5 CLIK-Mate footprint and attach the carrier.3dshapes models to
+U5, U6 and J10 before rendering; on the current board both steps are detected as done
+and skipped.
 
 Run with KiCad's bundled Python (it has the pcbnew module):
   /Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3 \
