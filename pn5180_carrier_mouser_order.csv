@@ -18,6 +18,6 @@ Mouser Part Number,Quantity,Manufacturer Part Number,Description,Customer Part N
 595-TLV1117LV33DCYR,1,TLV1117LV33DCYR,"3.3V 1A LDO, ceramic-stable, SOT-223",U4
 713-113991182,1,XIAO ESP32C6 (SKU 113991182),"XIAO ESP32C6 module, 2x7 pins on 15.24mm (user-supplied; verify Mouser #)",U5
 538-502439-1000,8,502439-1000,CLIK-Mate 2.00mm positive-lock housing 1x10 (bay cables),cable
-710-61300711821,2,61300711821,"WR-PHD 1x7 female socket header 2.54mm, THT (XIAO sockets)",cable
+710-61300711821,2,61300711821,"WR-PHD 1x7 female socket header 2.54mm, THT (XIAO sockets)",U5 sockets
 538-502439-0200,1,502439-0200,CLIK-Mate 2.00mm positive-lock housing 1x2 (24V cable),cable
 538-502438-0100,100,502438-0100,"CLIK-Mate 2.00mm crimp terminal, loose, tin, 22-26 AWG (82 needed + spares)",cable

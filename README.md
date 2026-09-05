@@ -26,11 +26,12 @@ Author: hyiger · Rev 1.3 · KiCad 10 files (saved with 10.0.6; KiCad 9 and olde
 | `carrier.pretty/` + `fp-lib-table` | Project-local footprints: the XIAO 2×7 socket (geometry from Seeed's OPL library) and the MP1584EN module pads |
 | `pn5180_carrier_schematic.pdf` / `.png` | Rendered schematic, no KiCad needed |
 | `pn5180_carrier_bom.csv` | Full BOM: refs, qty, MPN, Mouser #, footprint, DNP flag |
-| `pn5180_carrier_mouser_order.csv` | One-board order list for Mouser's BOM tool (populated parts + cable-side parts) |
+| `pn5180_carrier_mouser_order.csv` | One-board order list for Mouser's BOM tool (populated parts, the two XIAO sockets, and cable-side parts with spare terminals) |
 | `gerbers/`, `gerbers.zip` | Preview gerber/drill export of the unfinished layout — not a fab package yet |
 | `check_netlist.py` | Asserts the exported netlist against the intended connectivity (`kicad-cli sch export netlist --format kicadsexpr -o net.txt pn5180_carrier.kicad_sch`, then `python3 check_netlist.py net.txt`) |
-| `gen_kicad.py` | Historical generator that produced the first revision (KiCad 7 format). The KiCad files have been hand-edited since and are authoritative — don't re-run it over them |
+| `gen_kicad.py` | Historical generator that produced the schematic, symbol library, footprints and BOM through rev 1.3 (KiCad 7 format). The KiCad files have been hand-edited since and are authoritative — don't re-run it over them |
 | `CLAUDE.md`, `MEMORY.md` | Design guide and decision log: verified part data, layout state, ERC/DRC baseline, open items |
+| `.gitignore` | Keeps KiCad's transient files (`.history/`, `.kicad_prl`, lock files) and kicad-cli check outputs out of git |
 
 Footprints reference the stock KiCad libraries and every name was verified against
 the 10.0 library set (`Connector_Molex`, `Package_SO`, `Resistor_SMD`, …). If a newer
@@ -72,7 +73,8 @@ that pin as an *output*, leave pin 2 out of the cable rather than paralleling tw
 Pin numbers follow Seeed's own symbol/footprint: 1–11 = D0–D10, 12 = 3V3 out, 13 = GND,
 14 = 5V (USB VBUS). Pins 1 (D0) and 14 (5V) are at the USB end. The footprint carries the
 21 × 17.8 mm outline, a USB marker and an antenna marker at the far end — place the XIAO
-with the antenna end at the carrier's edge and keep copper off both layers under it.
+with the USB end at the carrier's top edge and the antenna end inboard, and keep copper off
+both layers under the antenna end.
 
 | Signal | XIAO pin | Symbol pin | GPIO* | Note |
 |---|---|---|---|---|
@@ -111,14 +113,15 @@ carrier unpowered, USB alone runs the XIAO and D1 keeps VBUS out of the carrier'
 **Tapping the Core One.** Take it from the PSU's 24 V output terminals — put a crimped
 fork/spade terminal under the existing screw next to the xBuddy's lead, positive and
 return together, 22 AWG is plenty. Check polarity with a meter before you plug the
-carrier in; the connector is keyed but the PSU end isn't. Load is ~0.5 A at 24 V worst
-case (5 V × 2 A through the buck), typically well under that, so the PSU's headroom is
-not a concern. The xBuddy's MMU port also carries firmware-switched 24 V, but it's only
+carrier in; the connector is keyed but the PSU end isn't. Load is ≤ ~0.4 A at 24 V worst
+case (the module's 1.5 A limit at 5 V), typically well under that, so the PSU's headroom
+is not a concern. The xBuddy's MMU port also carries firmware-switched 24 V, but it's only
 enabled when an MMU is configured, so the PSU terminals are the practical tap.
 
 **Input stage (all on the carrier):** F1 1 A slow-blow → D2 SMAJ28A TVS (clamps motor
 regen spikes; a reversed input forward-biases it and blows F1) → D3 PMEG6030EP reverse
-Schottky (so a miswire doesn't even blow the fuse) → C8/C9 2 × 10 µF 50 V → U6.
+Schottky (keeps the reversed input off C8/C9 and the module; F1 still blows through D2,
+so replace it after fixing the miswire) → C8/C9 2 × 10 µF 50 V → U6.
 
 **Buck (U6): MP1584EN mini module, mounted flat.** The footprint has four 3 mm
 through-hole pads on the module's 18.54 × 8.13 mm pad rectangle; lay the module on the
@@ -142,8 +145,8 @@ Three things about this module on a 24 V rail:
 
 One connector family for everything. Bay cable: 502439-1000 housing at the carrier with
 10 × 502438 terminals on 22–26 AWG stranded wire, 2.54 mm DuPont-style female on the module
-end (or solder to the module header). Power: 502439-0200 with 22 AWG. There is no ESP32
-cable any more — it's on the board.
+end (or solder to the module header). Power: 502439-0200 with 22 AWG. The XIAO is socketed
+on the carrier, so bay and power cables are the only cables.
 
 The housing latches into the receptacle (the CLIK) and releases with a squeeze — no tools.
 Molex's own hand crimper (63819-2800) is expensive; the 502438 is a standard open-barrel
@@ -178,8 +181,9 @@ edges) and needs nothing extra. NSS/BUSY see one stub each and are fine.
 - R6/R7 sit between the ESP32 and the SCK/MOSI bus (nets `SCK_IN`/`MOSI_IN` on the ESP32 side).
 - Pull-ups on `/EN` and `/RST` and pull-downs on `A0..A2` define everything while the
   ESP32 is booting or unplugged. The 4×100k arrays RN1/RN2 keep unfitted bays' BUSY
-  inputs from floating. Array element *k* of RN1 is bay *k*, of RN2 is bay
-  *k*+4 (pins 1–4 to the signals, 8–5 to GND, the standard 1–8/2–7/3–6/4–5 pairing).
+  inputs from floating. Bay *n* uses element (*n* mod 4)+1 of RN(1 + *n*÷4): pin
+  (*n* mod 4)+1 to the signal and its opposite pin (8, 7, 6, 5) to GND — the standard
+  1–8/2–7/3–6/4–5 pairing.
 
 **Rule:** change `A0..A2` only while `/EN` is high, or two NSS lines can glitch low
 during the decoder transition.
@@ -244,8 +248,9 @@ state and the ERC/DRC baseline are tracked in `MEMORY.md`.
 
 - Ground plane on one layer; SPI signals short, routed as a star or short daisy chain
   from U5 to the bay connectors. With 8 loads plus cable capacitance, ≤ 1 MHz SPI.
-- U5 at the top centre, USB end at the top board edge, antenna end (opposite the USB)
-  pointing inboard with a copper keep-out on both layers under it. The two sockets are
+- U5 at the top centre, USB-C end at the top board edge (the rule is a 1–2 mm overhang;
+  as placed it sits 0.45 mm inside), antenna end (opposite the USB) pointing inboard with
+  a copper keep-out on both layers under it. The two sockets are
   plain 1×7 female headers on 15.24 mm centres; the footprint sets that spacing. The XIAO
   also has an external-antenna u.FL if the rack's metal gets in the way.
 - Bay connectors down both long edges (J5–J8 left, J1–J4 right), in bay order, so cables
@@ -266,8 +271,9 @@ state and the ERC/DRC baseline are tracked in `MEMORY.md`.
 ## BOM (SMD except the XIAO sockets and U6's pads)
 
 Rev 1.3. Every symbol in the schematic carries `Manufacturer`, `MPN` and `Mouser` fields,
-so KiCad's own BOM export reproduces this table. `pn5180_carrier_mouser_order.csv` can be
-uploaded directly to Mouser's BOM tool.
+so KiCad's own BOM export reproduces this table except the two Würth sockets, which are
+added by hand (they are in the Mouser order list). `pn5180_carrier_mouser_order.csv` can
+be uploaded directly to Mouser's BOM tool.
 
 | Ref | Qty | Part | Mouser # | Footprint |
 |---|---|---|---|---|
@@ -328,4 +334,6 @@ Capacitor notes:
 ## Going to 16 bays
 
 Swap U1 for a 74HC154 (4-to-16), add a second 74HC151 selected by A3 and two more
-arrays: 6 GPIOs total. At that point split the SPI bus across HSPI and VSPI to keep loading sane.
+arrays: 6 select GPIOs, 10 of the XIAO's 11 pins with SPI and /RST. The ESP32-C6 has one
+user SPI host, so 16 stubs stay on one bus — keep it at ≤ 1 MHz with the source
+termination, or move to an MCU with a second SPI port.
