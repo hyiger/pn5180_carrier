@@ -10138,7 +10138,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Connector_Molex:Molex_CLIK-Mate_502494-0270_1x02-1MP_P2.00mm_Horizontal"
+		(property "Footprint" "carrier:Molex_CLIK-Mate_502494-0270_1x02-1MP_P2.00mm_Horizontal"
 			(at 20.32 35.56 0)
 			(hide yes)
 			(show_name no)
@@ -18284,7 +18284,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Fuse:Fuse_Littelfuse-NANO2-451_453"
+		(property "Footprint" "carrier:Fuse_Littelfuse-NANO2-451_453"
 			(at 86.36 223.52 0)
 			(hide yes)
 			(show_name no)

@@ -38,4 +38,9 @@
   (pad "2" thru_hole circle (at -9.271 4.064) (size 3 3) (drill 1) (layers *.Cu *.Mask) (tstamp edf2527e-b8d9-4079-b345-7b36a37f13ca))
   (pad "3" thru_hole circle (at 9.271 -4.064) (size 3 3) (drill 1) (layers *.Cu *.Mask) (tstamp c3b81526-31d2-478f-944c-ecc80e537ab2))
   (pad "4" thru_hole circle (at 9.271 4.064) (size 3 3) (drill 1) (layers *.Cu *.Mask) (tstamp 49db13eb-c65e-45de-b24e-64e0e3486d85))
+  (model "${KIPRJMOD}/carrier.3dshapes/MP1584EN_Module_22x17.wrl"
+    (offset (xyz 0 0 0))
+    (scale (xyz 1 1 1))
+    (rotate (xyz 0 0 0))
+  )
 )

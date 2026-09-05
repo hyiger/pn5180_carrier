@@ -51,4 +51,9 @@
   (pad "9" thru_hole oval (at -5.08 7.62) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) (tstamp c1f6f480-91bd-4762-a8f6-c837cdb83dc9))
   (pad "7" thru_hole oval (at -7.62 -7.62) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) (tstamp c8da3114-f440-44a2-beb4-4dd053c70996))
   (pad "8" thru_hole oval (at -7.62 7.62) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) (tstamp 55bb43eb-a622-40c8-b998-122533628ec8))
+  (model "${KIPRJMOD}/carrier.3dshapes/Seeed_XIAO_ESP32C6_on_2x7_sockets.wrl"
+    (offset (xyz 0 0 0))
+    (scale (xyz 1 1 1))
+    (rotate (xyz 0 0 0))
+  )
 )

@@ -24,6 +24,10 @@ schematic.svg
 board.svg
 out/
 
+# 3D preview renders written by tools/render_3d_preview.py (the one committed preview
+# image lives in the repo root)
+renders/
+
 # Python
 __pycache__/
 *.pyc

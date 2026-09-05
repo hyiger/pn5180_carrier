@@ -1394,6 +1394,17 @@
 			(uuid "704e9e72-c6cf-437c-b3db-de51f3da59a5")
 		)
 		(embedded_fonts no)
+		(model "${KIPRJMOD}/carrier.3dshapes/Molex_CLIK-Mate_503148-1090_2x05_RA.wrl"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
 	)
 	(footprint "Diode_SMD:D_SOD-128"
 		(layer "F.Cu")
@@ -2640,6 +2651,17 @@
 			(uuid "9cf85548-9a79-4a46-93d5-bd6e93c2478c")
 		)
 		(embedded_fonts no)
+		(model "${KIPRJMOD}/carrier.3dshapes/Seeed_XIAO_ESP32C6_on_2x7_sockets.wrl"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
 	)
 	(footprint "Capacitor_SMD:C_1210_3225Metric_Pad1.33x2.70mm_HandSolder"
 		(layer "F.Cu")
@@ -3223,6 +3245,17 @@
 			(uuid "eb7a642e-85a9-4a49-a691-027c3b00fd1d")
 		)
 		(embedded_fonts no)
+		(model "${KIPRJMOD}/carrier.3dshapes/Molex_CLIK-Mate_503148-1090_2x05_RA.wrl"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
 	)
 	(footprint "carrier:Molex_CLIK-Mate_503148-1090_2x05-1MP_P1.50mm_Horizontal"
 		(layer "F.Cu")
@@ -3622,8 +3655,19 @@
 			(uuid "8702932d-3464-47af-884f-2c2e0df35785")
 		)
 		(embedded_fonts no)
+		(model "${KIPRJMOD}/carrier.3dshapes/Molex_CLIK-Mate_503148-1090_2x05_RA.wrl"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
 	)
-	(footprint "Fuse:Fuse_Littelfuse-NANO2-451_453"
+	(footprint "carrier:Fuse_Littelfuse-NANO2-451_453"
 		(layer "F.Cu")
 		(uuid "6fbe9eaa-cb5a-483b-8f6e-7efb58a572a1")
 		(at 135.5 144 180)
@@ -3859,7 +3903,7 @@
 			(uuid "6c2dd271-cf00-46dd-ab98-cd74ac2f71e2")
 		)
 		(embedded_fonts no)
-		(model "${KICAD10_3DMODEL_DIR}/Fuse.3dshapes/Fuse_Littelfuse-NANO2-451_453.step"
+		(model "${KIPRJMOD}/carrier.3dshapes/Littelfuse_NANO2_451_453.wrl"
 			(offset
 				(xyz 0 0 0)
 			)
@@ -4269,6 +4313,17 @@
 			(uuid "bf9a9740-8e0b-45a5-9a6c-ce68ff7b6e2b")
 		)
 		(embedded_fonts no)
+		(model "${KIPRJMOD}/carrier.3dshapes/Molex_CLIK-Mate_503148-1090_2x05_RA.wrl"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
 	)
 	(footprint "Package_SO:SOIC-16_3.9x9.9mm_P1.27mm"
 		(layer "F.Cu")
@@ -5158,6 +5213,17 @@
 			(uuid "a2d52a48-5875-435e-be5b-0eaf12342897")
 		)
 		(embedded_fonts no)
+		(model "${KIPRJMOD}/carrier.3dshapes/Molex_CLIK-Mate_503148-1090_2x05_RA.wrl"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
 	)
 	(footprint "carrier:Molex_CLIK-Mate_503148-1090_2x05-1MP_P1.50mm_Horizontal"
 		(layer "F.Cu")
@@ -5557,6 +5623,17 @@
 			(uuid "51000c44-b9f5-4a76-98fd-4ee34642e9d0")
 		)
 		(embedded_fonts no)
+		(model "${KIPRJMOD}/carrier.3dshapes/Molex_CLIK-Mate_503148-1090_2x05_RA.wrl"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
 	)
 	(footprint "carrier:Molex_CLIK-Mate_503148-1090_2x05-1MP_P1.50mm_Horizontal"
 		(layer "F.Cu")
@@ -5956,8 +6033,19 @@
 			(uuid "d0a95e0f-c876-443d-9ebc-8e36c52b1b1b")
 		)
 		(embedded_fonts no)
+		(model "${KIPRJMOD}/carrier.3dshapes/Molex_CLIK-Mate_503148-1090_2x05_RA.wrl"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
 	)
-	(footprint "Connector_Molex:Molex_CLIK-Mate_502494-0270_1x02-1MP_P2.00mm_Horizontal"
+	(footprint "carrier:Molex_CLIK-Mate_502494-0270_1x02-1MP_P2.00mm_Horizontal"
 		(layer "F.Cu")
 		(uuid "b638a1f1-3a54-4cf7-af77-f9d0128d2909")
 		(at 139.8825 154)
@@ -6423,7 +6511,7 @@
 			(uuid "c72c0e56-1f6a-4eb2-9ea6-1f3762d75492")
 		)
 		(embedded_fonts no)
-		(model "${KICAD10_3DMODEL_DIR}/Connector_Molex.3dshapes/Molex_CLIK-Mate_502494-0270_1x02-1MP_P2.00mm_Horizontal.step"
+		(model "${KIPRJMOD}/carrier.3dshapes/Molex_CLIK-Mate_502494-0270_1x02_RA.wrl"
 			(offset
 				(xyz 0 0 0)
 			)
@@ -7133,6 +7221,17 @@
 			(uuid "f659920d-6310-4c34-a42e-e6fe2b8343c0")
 		)
 		(embedded_fonts no)
+		(model "${KIPRJMOD}/carrier.3dshapes/Molex_CLIK-Mate_503148-1090_2x05_RA.wrl"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
 	)
 	(footprint "Package_SO:SOIC-16_3.9x9.9mm_P1.27mm"
 		(layer "F.Cu")
@@ -8041,6 +8140,17 @@
 			(uuid "63cc0d25-85e0-4a96-92e0-059f03d75d52")
 		)
 		(embedded_fonts no)
+		(model "${KIPRJMOD}/carrier.3dshapes/MP1584EN_Module_22x17.wrl"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
 	)
 	(footprint "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
 		(layer "F.Cu")
