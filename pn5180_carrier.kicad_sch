@@ -1723,7 +1723,7 @@
 					)
 				)
 			)
-			(property "Description" "MP1584EN mini buck module (D-SUN style, 22.1 x 16.8 mm), 4.5-28V in, set to 5.0V, 3A peak / 1.5A cont."
+			(property "Description" "MP1584EN mini buck module (D-SUN style, 22.1 x 16.8 mm), 4.5-28V in, fixed 5V output (no trimmer), 3A peak / 1.5A cont."
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -3225,7 +3225,7 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "U5 on two 1x7 sockets 15.24 mm apart; USB end at the board edge, antenna inboard, no copper under it."
+	(text "U5 soldered flat on its 14 castellations; USB end at the board edge, antenna inboard, no copper under it."
 		(exclude_from_sim no)
 		(at 243.84 233.68 0)
 		(effects
@@ -3434,7 +3434,7 @@
 		)
 		(uuid "5818b9b9-539d-4f1c-bcfd-42d3567c775d")
 	)
-	(text "U6: MP1584EN module (28V max) flat on 4 THT pads; set to 5.00V before fitting, lock the pot."
+	(text "U6: MP1584EN module, fixed 5V output (no trimmer), 28V max in; flat on 4 THT pads."
 		(exclude_from_sim no)
 		(at 243.84 218.44 0)
 		(effects
@@ -3776,7 +3776,7 @@
 		)
 		(uuid "e3f3ad51-44fb-485c-bd71-64785e60e805")
 	)
-	(text "J10: CLIK-Mate 2.00mm 1x2 502494-0270; housing 502439-0200; terminals 502438. All SMD except U5 sockets, U6 pads."
+	(text "J10: CLIK-Mate 2.00mm 1x2 502494-0270; housing 502439-0200; terminals 502438. All SMD except U6's 4 THT pads."
 		(exclude_from_sim no)
 		(at 243.84 229.87 0)
 		(effects
@@ -11388,7 +11388,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "MP1584EN module (set 5.0V)"
+		(property "Value" "MP1584EN module, fixed 5V"
 			(at 114.3 254 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11421,7 +11421,7 @@
 				)
 			)
 		)
-		(property "Description" "22x17mm adjustable module, user-supplied (Amazon); set to 5.0V"
+		(property "Description" "22x17mm fixed-5V module (no trimmer), user-supplied (Amazon)"
 			(at 132.08 246.38 0)
 			(hide yes)
 			(show_name no)
@@ -13767,7 +13767,7 @@
 				)
 			)
 		)
-		(property "Description" "XIAO ESP32C6 module, 2x7 pins on 15.24mm (user-supplied; verify Mouser #)"
+		(property "Description" "XIAO ESP32C6 module (Seeed SKU 113991182), soldered flat on its 14 castellations (user-supplied; verify Mouser #)"
 			(at 50.8 101.6 0)
 			(hide yes)
 			(show_name no)
@@ -13789,7 +13789,7 @@
 				)
 			)
 		)
-		(property "MPN" "XIAO ESP32C6 (SKU 113991182)"
+		(property "MPN" "XIAO ESP32C6"
 			(at 50.8 101.6 0)
 			(hide yes)
 			(show_name no)
@@ -18273,7 +18273,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "1A slow"
+		(property "Value" "1A"
 			(at 82.55 226.314 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18306,7 +18306,7 @@
 				)
 			)
 		)
-		(property "Description" "1A slow-blow SMD fuse, NANO2"
+		(property "Description" "1A SMD fuse, NANO2 451/453 (fast-acting series; see CLAUDE.md open item 13)"
 			(at 86.36 223.52 0)
 			(hide yes)
 			(show_name no)

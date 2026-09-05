@@ -152,11 +152,9 @@ Three things about this module on a 24 V rail:
 
 - It's rated 28 V max. The TVS (28 V standoff, clamping from ~31 V) and C8/C9 are what
   keep spikes off it — don't leave them out to save parts.
-- It's adjustable. **Set the pot to 5.00 V with a meter before mounting it**, then lock
-  the pot with a dab of nail varnish. A bumped pot puts up to 20 V into the readers and
-  the XIAO. If you can get a fixed-5 V variant, prefer it — the module photographed on
-  2026-09-05 (the one modelled in 3D) has no trimmer, i.e. it is that type; see CLAUDE.md
-  open item 9 before trusting this paragraph.
+- It's the **fixed 5 V output** variant (black PCB, no trimmer — the one modelled in
+  3D). Don't substitute the adjustable type: a bumped pot can put up to 20 V into the
+  readers and the XIAO. Check 5.0 V at OUT+ on the bench before fitting the readers.
 - The seller's own guidance is 1.5 A continuous without a heatsink. The carrier's real
   draw is well under 1 A (one RF field at a time), so that's fine; give it some copper
   under the pads anyway.
@@ -317,7 +315,7 @@ uploaded directly to Mouser's BOM tool.
 | U5 | 1 | Seeed Studio XIAO ESP32C6 (SKU 113991182) — user-supplied, soldered flat | 713-113991182 (verify) | carrier:Seeed_XIAO_ESP32C6_SMD |
 | D1 | 1 | Nexperia PMEG2010AEH, Schottky 20 V 1 A, SOD-123 | 771-PMEG2010AEH | Diode_SMD:D_SOD-123 |
 | J10 | 1 | Molex 502494-0270, CLIK-Mate 2.00 mm RA SMT receptacle 1×2 (24 V in) | 538-502494-0270 | carrier:Molex_CLIK-Mate_502494-0270_1x02-1MP_P2.00mm_Horizontal (local copy of the stock footprint, with 3D model) |
-| U6 | 1 | MP1584EN mini buck module, 22 × 17 mm, set to 5.0 V — user-supplied (Amazon) | — | carrier:MP1584EN_Module_22x17 |
+| U6 | 1 | MP1584EN mini buck module, 22 × 17 mm, fixed 5 V output (no trimmer) — user-supplied (Amazon) | — | carrier:MP1584EN_Module_22x17 |
 | F1 | 1 | Littelfuse 0453001.MR, 1 A, NANO2 (451/453 is the fast-acting series — see open item 13) | 576-0453001.MR | carrier:Fuse_Littelfuse-NANO2-451_453 (local copy of the stock footprint, with 3D model) |
 | D2 | 1 | Littelfuse SMAJ28A TVS, 28 V standoff, SMA | 576-SMAJ28A | Diode_SMD:D_SMA |
 | D3 | 1 | Nexperia PMEG6030EP Schottky 60 V 3 A (reverse polarity) | 771-PMEG6030EP | Diode_SMD:D_SOD-128 |

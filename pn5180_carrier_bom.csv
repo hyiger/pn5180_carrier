@@ -17,5 +17,5 @@ J10,1,24V IN (CLIK-Mate 1x2),J,Molex,502494-0270,538-502494-0270,carrier:Molex_C
 U1,1,74HC138,U,Texas Instruments,SN74HC138DR,595-SN74HC138DR,Package_SO:SOIC-16_3.9x9.9mm_P1.27mm,,"3-to-8 decoder, SOIC-16"
 U2,1,74HC151,U,Texas Instruments,SN74HC151DR,595-SN74HC151DR,Package_SO:SOIC-16_3.9x9.9mm_P1.27mm,,"8:1 mux, SOIC-16"
 U4,1,TLV1117LV33DCYR,U,Texas Instruments,TLV1117LV33DCYR,595-TLV1117LV33DCYR,Package_TO_SOT_SMD:SOT-223-3_TabPin2,,"3.3V 1A LDO, ceramic-stable, SOT-223"
-U5,1,XIAO ESP32C6,U,Seeed Studio,XIAO ESP32C6 (SKU 113991182),713-113991182,carrier:Seeed_XIAO_ESP32C6_SMD,,"XIAO ESP32C6 module, soldered flat on its 14 castellations (user-supplied; verify Mouser #)"
-U6,1,MP1584EN module (set 5.0V),U,Generic (D-SUN style),MP1584EN mini buck module,,carrier:MP1584EN_Module_22x17,,"22x17mm adjustable module, user-supplied (Amazon); set to 5.0V"
+U5,1,XIAO ESP32C6,U,Seeed Studio,XIAO ESP32C6,713-113991182,carrier:Seeed_XIAO_ESP32C6_SMD,,"XIAO ESP32C6 module (Seeed SKU 113991182), soldered flat on its 14 castellations (user-supplied; verify Mouser #)"
+U6,1,"MP1584EN module, fixed 5V",U,Generic (D-SUN style),MP1584EN mini buck module (fixed 5V output),,carrier:MP1584EN_Module_22x17,,"22x17mm fixed-5V module (no trimmer), user-supplied (Amazon)"

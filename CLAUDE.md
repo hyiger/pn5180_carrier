@@ -146,9 +146,8 @@ If any of these are missing, say so rather than recreating them from memory.
   (hardware SPI), D3 /EN, D0–D2 A0–A2, D4 BUSY, D5 /RST, D6/D7 spare. R6/R7 = 33 Ω
   series on SCK/MOSI at the XIAO. R1/R5 10k pull-ups (/EN, /RST); R2–R4 10k pull-downs.
 - **Power**: J10 (CLIK-Mate 1×2) 24 V in → F1 1 A → D2 SMAJ28A TVS → D3 PMEG6030EP
-  reverse Schottky → C8/C9 10 µF 50 V → U6 MP1584EN module (fixed-5 V per this log,
-  adjustable "set to 5.0 V" per every design file — unresolved, open item 9; 4 THT pads,
-  IN side / OUT side) → +5V. C6 220 µF 1210 (+C7 DNP) bulk. U4 TLV1117LV33 → +3V3 for
+  reverse Schottky → C8/C9 10 µF 50 V → U6 MP1584EN **fixed-5 V** module (no trimmer,
+  confirmed by the owner 2026-09-05; 4 THT pads, IN side / OUT side) → +5V. C6 220 µF 1210 (+C7 DNP) bulk. U4 TLV1117LV33 → +3V3 for
   the logic and the bays' pin 2. D1 PMEG2010AEH between +5V and the XIAO's 5V pin
   (its 5V pin is raw USB VBUS). IRQ is not used anywhere.
 - All parts SMD except the MP1584EN module's four 3 mm THT pads (the XIAO's sockets were
@@ -230,12 +229,11 @@ If any of these are missing, say so rather than recreating them from memory.
    — editing D2 renames the net, silently drops it out of the Power class, and fails the
    checker. Add a `24V_F` global label (the `24V_*` pattern then applies) and delete the
    `*D2-K*` pattern.
-9. Docs and design files disagree on U6: this file and MEMORY.md say fixed-5 V module
-   without pot, but the schematic Value ("MP1584EN module (set 5.0V)"), the BOM CSV,
-   README §power and the schematic's DESIGN NOTES all say adjustable, "set the pot to
-   5.00 V". Settle with the owner; it changes the U6 BOM line and the assembly notes. The
-   module the owner photographed on 2026-09-05 (basis of the 3D model) has no trimmer,
-   i.e. it is the fixed-output type.
+9. ~~Docs and design files disagree on U6 (fixed-5 V vs adjustable "set the pot").~~
+   Resolved 2026-09-05: the owner confirmed the fixed-5 V, no-trimmer module. Schematic
+   Value/Description (symbol and PCB footprint fields), the DESIGN NOTES line, the BOM
+   CSV, README §power and this file now all say fixed 5 V output; no pot-setting step
+   remains in the assembly notes.
 10. ~~README, BOM CSV, renders and schematic notes still mention JP1/JP2 and KiCad 7.~~
     Done 2026-09-04: README rewritten for KiCad 10 and the PCB; JP1/JP2 removed from the
     README, `pn5180_carrier_bom.csv`, the schematic's two DESIGN NOTES texts and the
@@ -250,16 +248,19 @@ If any of these are missing, say so rather than recreating them from memory.
     2026-09-05 (commit a606ea7): J1–J8 are now the 503148-1090 footprint at the old
     positions and orientations (nail pads outboard), and the 3D-model references were
     text-patched into the embedded footprints afterwards; U5 was swapped to the castellated
-    SMD footprint by script the same day (open item 14). Still to do: re-route the eight
-    columns, the power lanes and U5's pads (every track to the old pads dangles, and the
-    old NSS stubs now short to the new GND pad 9), refill zones, re-run DRC, regenerate
-    `gerbers/`. The a606ea7 save has the GND zones **unfilled** (Update PCB from Schematic
-    drops the fills), so DRC on the saved file over-reports opens — refill first. Before
+    SMD footprint by script the same day (open item 14). The owner's routing session saved
+    at 12:15 (commit e281c6a) cut the refilled-DRC shorts from 44 to 10: 7 are in the J3
+    column (the old NSS2 stub on GND pad 9, and SCK/MISO/MOSI/GND vias sitting under pads
+    1/3/6/MP — the same vias are the 6 hole-clearance errors) and 3 at U5 pad 5 (item 14).
+    Still to do: finish the columns and power lanes (89 opens, 54 dangling tracks — mostly
+    +5V, +3V3, ~{RST}, MISO, MOSI, SCK), refill zones, re-run DRC, regenerate `gerbers/`.
+    Saves made after Update PCB from Schematic have the GND zones **unfilled** (it drops
+    the fills), so DRC on the file as saved over-reports opens — refill first. Before
     fab, confirm the footprint's nail-pad position and pad order against Molex
     SD-503148-1090 (see MEMORY.md item 12).
 13. **F1 fuse family.** The schematic's F1 Value/Description, the Mouser CSV and README
-    §input stage called Littelfuse 0453001.MR a "1 A slow-blow" (the BOM CSV, README rows
-    and Mouser CSV were reworded on 2026-09-05; the schematic fields still say it), but the
+    §input stage called Littelfuse 0453001.MR a "1 A slow-blow" (all reworded on 2026-09-05,
+    the schematic's Value/Description included, to "1A" / "NANO2 451/453 fast-acting"), but the
     NANO2 451/453 series is Littelfuse's very-fast-acting family; Slo-Blo is 452/454
     (0454001.MR, footprint `Fuse:Fuse_Littelfuse-NANO2-452_454`). Either keep the fast fuse
     (fix the description and check hot-plug inrush into C8/C9 plus the module's input
@@ -278,8 +279,12 @@ If any of these are missing, say so rather than recreating them from memory.
     only ~0.1 mm — extend them 1.28 mm; the XIAO's underside carries exposed pads (BAT+,
     BAT−, a thermal pad, test points — KiCad's stock `RF_Module:MCU_Seeed_ESP32C3` shows
     Seeed's SMD pattern with them), so put an F.Cu keep-out under the body (no pour,
-    tracks or untented vias) or add those pads to the footprint; the scripted swap left
-    U5's MPN and Mouser fields visible on F.SilkS — hide them in the footprint properties;
-    and the schematic's U5 Description (still "2x7 pins on 15.24mm") and F1
-    Value/Description ("1A slow") need the BOM-CSV wording — edit in the GUI (KiCad was
-    open when this was found).
+    tracks or untented vias) or add those pads to the footprint. Done since: the owner's
+    12:15 save hid U5's Mouser field and shortened its MPN to "XIAO ESP32C6", left visible
+    on F.SilkS as the module label — the schematic's U5 MPN was set to the same string
+    (SKU 113991182 moved into the Description) so parity stays at 0; the U5 Description and
+    F1 Value/Description were reworded on disk (KiCad closed) to the BOM-CSV wording; R6,
+    R7 and D1 no longer overlap U5's courtyard, though their pad-1 tracks now stop short
+    (MOSI_IN, SCK_IN, 5V_XIAO: one open each); R1/R5 still overlap. Still open on that
+    save: the 3 shorts at pad 5, and ~{EN} has one open — an F.Cu track and a B.Cu stub
+    near (130, 65.4) with no via between them.

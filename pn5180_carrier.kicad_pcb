@@ -3240,7 +3240,7 @@
 				)
 			)
 		)
-		(property "Value" "1A slow"
+		(property "Value" "1A"
 			(at 0 2.7 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -3265,7 +3265,7 @@
 				)
 			)
 		)
-		(property "Description" "1A slow-blow SMD fuse, NANO2"
+		(property "Description" "1A SMD fuse, NANO2 451/453 (fast-acting series; see CLAUDE.md open item 13)"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -4819,7 +4819,7 @@
 				)
 			)
 		)
-		(property "Description" "XIAO ESP32C6 module, 2x7 pins on 15.24mm (user-supplied; verify Mouser #)"
+		(property "Description" "XIAO ESP32C6 module (Seeed SKU 113991182), soldered flat on its 14 castellations (user-supplied; verify Mouser #)"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -7952,7 +7952,7 @@
 				)
 			)
 		)
-		(property "Value" "MP1584EN module (set 5.0V)"
+		(property "Value" "MP1584EN module, fixed 5V"
 			(at 0 10 90)
 			(layer "F.Fab")
 			(uuid "2259cc64-03d2-4437-96ed-7513a4662fdf")
@@ -7974,7 +7974,7 @@
 				)
 			)
 		)
-		(property "Description" "22x17mm adjustable module, user-supplied (Amazon); set to 5.0V"
+		(property "Description" "22x17mm fixed-5V module (no trimmer), user-supplied (Amazon)"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)

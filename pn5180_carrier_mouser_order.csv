@@ -16,7 +16,7 @@ Mouser Part Number,Quantity,Manufacturer Part Number,Description,Customer Part N
 595-SN74HC138DR,1,SN74HC138DR,"3-to-8 decoder, SOIC-16",U1
 595-SN74HC151DR,1,SN74HC151DR,"8:1 mux, SOIC-16",U2
 595-TLV1117LV33DCYR,1,TLV1117LV33DCYR,"3.3V 1A LDO, ceramic-stable, SOT-223",U4
-713-113991182,1,XIAO ESP32C6 (SKU 113991182),"XIAO ESP32C6 module, soldered flat on its 14 castellations (user-supplied; verify Mouser #)",U5
+713-113991182,1,XIAO ESP32C6,"XIAO ESP32C6 module (Seeed SKU 113991182), soldered flat on its 14 castellations (user-supplied; verify Mouser #)",U5
 538-503149-1000,8,503149-1000,CLIK-Mate 1.50mm dual-row positive-lock plug housing 2x5 (bay cables),cable
 538-502439-0200,1,502439-0200,CLIK-Mate 2.00mm positive-lock housing 1x2 (24V cable),cable
 538-502579-0000-CT,100,502579-0000 (Cut Strip),"CLIK-Mate 1.50mm crimp terminal, tin, 24-28 AWG, cut strip of 100 (80 needed + spares; thin-wall wire, insulation OD <= 1.28 mm)",cable

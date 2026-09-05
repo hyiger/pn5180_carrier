@@ -7,8 +7,8 @@ stamps rev 1.3, while the sheet title block and README are at 1.4 since 2026-09-
 owner has hand-edited since.
 Updated 2026-09-04 for the KiCad 10 migration, with measured layout and check status
 (history item 11, "Layout state", "Check status"), and 2026-09-05 for the 2×5 CLIK-Mate
-switch (item 12), the 3D models (item 13) and the flat-mounted XIAO (item 14). All clock
-times below are local.
+switch (item 12), the 3D models (item 13), the flat-mounted XIAO (item 14) and the
+fixed-5 V U6 confirmation (item 7). All clock times below are local.
 
 ## Owner and purpose
 
@@ -54,8 +54,8 @@ times below are local.
    added in series from the carrier's 5 V.
 7. **Power input**: 5 V terminal → 24 V from the printer PSU. First a discrete
    LMR51420 buck (36 V part, reference design captured), then replaced by an
-   **MP1584EN mini module** (owner's preference, fixed-5 V variant, no pot — though every
-   design file still says adjustable, "set to 5.0 V"; unresolved, see open questions) on four
+   **MP1584EN mini module** (owner's preference, fixed-5 V variant, no pot — confirmed
+   2026-09-05, and every design file now says fixed 5 V output) on four
    3 mm THT pads at ±9.271 × ±4.064 mm (module drawing: 22.098 × 16.764 mm board,
    18.542 × 8.128 mm pad rectangle). Input protection kept: F1 1 A NANO2, D2 SMAJ28A
    TVS (module is 28 V max), D3 PMEG6030EP reverse Schottky, C8/C9 10 µF 50 V.
@@ -163,9 +163,11 @@ times below are local.
     tracks end at the old hole centres and overlap the new pads by only ~0.1 mm — extend
     them 1.28 mm; /EN (pad 4) is OPEN because its route jogged to B.Cu into the old THT
     pad; 3 shorts under pad 5 (BUSY); the swap left the MPN/Mouser fields visible on silk;
-    the XIAO's underside pads need an F.Cu keep-out — see CLAUDE.md open item 14). The
-    schematic's U5 Description and F1 fields still carry the old wording (KiCad was open;
-    pending). The socketed footprint and
+    the XIAO's underside pads need an F.Cu keep-out — see CLAUDE.md open item 14). Later
+    on 2026-09-05 (KiCad closed) the schematic's U5 Description and F1 Value/Description
+    got the BOM-CSV wording, and U5's MPN became "XIAO ESP32C6" in schematic, PCB and both
+    CSVs (the owner had shortened the PCB field, which stays visible on F.SilkS as the
+    module label; the SKU lives in the Description). The socketed footprint and
     its model stay in the library. Fixes from the 3D verification pass applied at the same
     time: half-hole castellations, buttons clear of the corner pads, J10 model on the
     stock F.Fab outline, no trimmer on the U6 model.
@@ -263,6 +265,23 @@ D9=20 D10=18 (write code with the D names).
   (Update PCB from Schematic; same positions and orientations). Tracks to them dangle
   until re-routed; the connector columns, power lanes and tab-pad clearances above still
   describe the 1×10 layout. All 35 footprints now reference a 3D model (item 13).
+- **2026-09-05 12:15: owner's routing session saved** (commit e281c6a; 368 segments,
+  80 vias, zones unfilled). Refilled-DRC shorts 44 → 10, courtyard overlaps 5 → 2 (R1/R5
+  only); see "Check status after the owner's 12:15 save" below.
+
+## Check status after the owner's 12:15 save (kicad-cli 10.0.6, 2026-09-05)
+
+- Board as saved (zones unfilled): 200 violations, 159 unconnected, 0 parity. Refilled on
+  a scratch copy: **170 violations, 89 unconnected, 0 parity**. Shorts 10: 7 in the J3
+  column (NSS2 track on GND pad 9; SCK via + track on pad 1 [+5V]; MISO via on pad 3
+  [~{RST}]; MOSI via + track on pad 6 [MISO]; a GND via in the nail pad) and 3 at U5 pad 5
+  (BUSY) under the ~{EN} and ~{RST} tracks. 70 clearance, 6 hole clearance (the J3 vias
+  above), 13 mask bridges, 54 dangling tracks + 2 dangling vias, 3 starved thermals
+  (RN1.5, J2.10, U1.5), 2 courtyard overlaps (U5 with R1 and R5), silk 2 edge + 1
+  overlap, 7 text-size warnings. Opens by net: +3V3 11, +5V 10, ~{RST} 10, MISO 10,
+  MOSI 9, SCK 9, GND 8, one per NSS0–7/BUSY0–7 (NSS6/NSS7 two), ~{EN} 1 (F.Cu track to
+  a B.Cu stub near (130, 65.4), no via), MOSI_IN/SCK_IN/5V_XIAO 1 each (R7/R6/D1 pad 1).
+  ERC 82 and the netlist (38/189/0) unchanged after the U6/U5/F1 field edits.
 
 ## Check status after the 2×5 and flat-XIAO swaps (kicad-cli 10.0.6, 2026-09-05)
 
@@ -375,10 +394,6 @@ D9=20 D10=18 (write code with the D names).
   Today the node is unlabeled; `check_netlist.py` expects the auto-name `Net-(D2-K)` and
   the Power netclass reaches it only via `*D2-K*` — editing D2 renames the net and
   silently drops it to the Default class.
-- U6: fixed-5 V module (this log, CLAUDE.md) or adjustable "set the pot to 5.00 V"
-  (schematic Value, BOM CSV, README, schematic DESIGN NOTES)? The files say adjustable;
-  the owner's photo of the module (2026-09-05, used for the 3D model) shows no trimmer,
-  i.e. the fixed-output type — confirm, then drop the pot-setting text everywhere.
 - Is routing signals on B.Cu (104 segments today) accepted, or does the "two feeders
   only" bottom-layer rule still stand?
 - U5 sits 0.45 mm inside the top edge instead of overhanging 1–2 mm: move it up, or

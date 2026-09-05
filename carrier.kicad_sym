@@ -318,7 +318,7 @@
     (property "Value" "MP1584EN_Module" (at 0 -2.54 0) (effects (font (size 1.27 1.27))))
     (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
     (property "Datasheet" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
-    (property "ki_description" "MP1584EN mini buck module (D-SUN style, 22.1 x 16.8 mm), 4.5-28V in, set to 5.0V, 3A peak / 1.5A cont." (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
+    (property "ki_description" "MP1584EN mini buck module (D-SUN style, 22.1 x 16.8 mm), 4.5-28V in, fixed 5V output (no trimmer), 3A peak / 1.5A cont." (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
     (symbol "MP1584EN_Module_0_1"
       (rectangle (start -10.16 5.08) (end 10.16 -5.08) (stroke (width 0.254) (type default)) (fill (type background)))
     )
