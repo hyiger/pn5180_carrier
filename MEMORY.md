@@ -326,9 +326,10 @@ D9=20 D10=18 (write code with the D names).
   packs of 10) instead of crimping?
 - 2×5 pin pairing: keep the module-header order (5V/3V3, /RST/NSS, MOSI/MISO, SCK/BUSY,
   GND/GND stacked) or re-pair so SCK sits over a GND? (Changes the netlist and README.)
-- Move J10 to the 1.50 family too (502585-0270 receptacle, 502578-0200 housing, same
-  502579 terminals — one terminal type, 24 V input ≤ 0.4 A)? Vertical 503154-1090 (2 A,
-  top entry) instead of the right-angle 503148-1090?
+- ~~Move J10 to the 1.50 family too?~~ Decided 2026-09-05: **J10 stays CLIK-Mate 2.00 mm**
+  (502494-0270 / 502439-0200 / 502438, 3 A contacts, 22 AWG to the PSU); the 1.50 mm
+  terminals top out at 24 AWG thin-wall and 2 A. Two terminal types is the accepted cost.
+- Vertical 503154-1090 (2 A, top entry) instead of the right-angle 503148-1090?
 - F1: the BOM's Littelfuse 0453001.MR is in the NANO2 451/453 very-fast-acting family,
   not Slo-Blo (that is 452/454, e.g. 0454001.MR) — keep fast and fix the description, or
   switch part and footprint? (Raised by the 2026-09-05 verification pass; check the
